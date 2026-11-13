@@ -32,7 +32,11 @@ textarea{min-height:190px;resize:vertical;line-height:1.5}
 .field-label{display:block;color:#c9c4df;font-size:13px;margin-top:8px}
 footer{text-align:center;color:#888;font-size:12px;padding:20px}
 hr{border:0;border-top:1px solid #38384e;margin:18px 0}
-@media(max-width:600px){main{padding:10px}.card{padding:14px}.grid{grid-template-columns:1fr}button{max-width:100%}}
+.voice-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.voice-panel{background:#24253a;border:1px solid #44415f;border-radius:12px;padding:14px;margin:12px 0}
+.progress-track{height:9px;background:#11121d;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:#a78bfa;transition:width .2s}
+@media(max-width:600px){main{padding:10px}.card{padding:14px}.grid,.voice-row{grid-template-columns:1fr}button{max-width:100%}}
 </style>
 </head>
 <body>
@@ -41,7 +45,6 @@ hr{border:0;border-top:1px solid #38384e;margin:18px 0}
 <p>Your personal YouTube Shorts control centre</p>
 </header>
 <main>
-
 <div class="card">
 <h2>📊 Dashboard</h2>
 <div class="grid">
@@ -64,7 +67,7 @@ hr{border:0;border-top:1px solid #38384e;margin:18px 0}
 
 <div class="card">
 <h2>🎬 Roblox Script Studio</h2>
-<p class="small">Paste your complete story below. Include six headings such as SCENE 1 through SCENE 6. The organizer checks that each scene appears exactly once.</p>
+<p class="small">Paste your complete story below. Include six headings such as SCENE 1 through SCENE 6.</p>
 <textarea id="storyInput" placeholder="Paste your complete Roblox story here..."></textarea>
 <button onclick="organizeStory()">🎬 Organize Into Scenes</button>
 <button class="secondary" onclick="copyEntireScript()">📋 Copy Entire Script</button>
@@ -75,11 +78,11 @@ hr{border:0;border-top:1px solid #38384e;margin:18px 0}
 
 <div class="card">
 <h2>✨ AI Video Prompt Enhancer</h2>
-<p class="small">Creates detailed, consistent video prompts from your six organized scenes. This is a local prompt formatter, not a connected AI model or video generator. Review and edit the prompts before using them in a video tool.</p>
+<p class="small">Creates detailed video prompts locally. It does not connect to an AI video generator.</p>
 <label class="field-label" for="characterGuide">Character appearance and continuity guide</label>
-<textarea id="characterGuide" style="min-height:110px">NOOBY: classic Roblox noob with a bright yellow block-shaped head, expressive simple face, blue shirt/torso, and green pants.
-BACON: Roblox character with recognizable brown bacon-style layered hair. Keep the same hair, outfit, body proportions, and accessories in every scene.
-CONTINUITY: Keep each character's design, colors, proportions, and accessories identical across all six scenes. Do not redesign or duplicate characters.</textarea>
+<textarea id="characterGuide" style="min-height:110px">NOOBY: classic Roblox noob with a bright yellow block-shaped head, blue torso and green pants.
+BACON: Roblox character with recognizable brown bacon-style layered hair.
+CONTINUITY: Keep character designs, colors and accessories identical across all scenes.</textarea>
 <div class="grid">
 <div>
 <label class="field-label" for="visualStyle">Visual style</label>
@@ -106,9 +109,59 @@ CONTINUITY: Keep each character's design, colors, proportions, and accessories i
 <div id="enhancedOutput"></div>
 </div>
 
+<div class="card" id="dialogueStudio">
+<h2>🎙️ Dialogue & Voice Studio</h2>
+<p class="small">Generate dialogue from your scenes and play it using speech voices available on your device. Speech is currently browser playback, not audio embedded in a video.</p>
+<div class="grid">
+<div>
+<label class="field-label" for="voiceCharacterA">Main character</label>
+<select id="voiceCharacterA">
+<option>Alex</option><option>Nooby</option><option>Narrator</option>
+</select>
+</div>
+<div>
+<label class="field-label" for="voiceCharacterB">Second character</label>
+<select id="voiceCharacterB">
+<option>Ryan</option><option>Bacon</option><option>Friend</option>
+</select>
+</div>
+</div>
+<div class="grid">
+<div>
+<label class="field-label" for="speechVoice">Available device voice</label>
+<select id="speechVoice"><option value="">Default device voice</option></select>
+</div>
+<div>
+<label class="field-label" for="speechRate">Speaking speed</label>
+<select id="speechRate">
+<option value="0.85">Slow / dramatic</option>
+<option value="1" selected>Normal</option>
+<option value="1.15">Fast Shorts pace</option>
+<option value="1.3">Very fast</option>
+</select>
+</div>
+</div>
+<label class="field-label" for="dialogueInput">Dialogue — one line per speaker</label>
+<textarea id="dialogueInput" placeholder="Alex: Bro, did you see that?
+Ryan: Nobody's even inside!
+Narrator: But they were not alone..."></textarea>
+<button onclick="buildDialogueFromScenes()">🪄 Extract Dialogue</button>
+<button onclick="playDialogue()">▶️ Play All Dialogues</button>
+<button class="secondary" onclick="playSelectedDialogue()">🔊 Play First Line</button>
+<button class="secondary" onclick="stopDialogue()">⏹ Stop Voice</button>
+<button class="secondary" onclick="downloadDialogue()">⬇️ Download Dialogue</button>
+<p id="voiceStatus" class="status" aria-live="polite"></p>
+<div class="progress-track"><div class="progress-fill" id="voiceProgress"></div></div>
+<p class="small" id="voiceLineStatus">Voice playback ready.</p>
+<div class="voice-panel">
+<h3>🔊 Voice Preview</h3>
+<button class="secondary" onclick="previewVoice()">Test Selected Voice</button>
+</div>
+</div>
+
 <div class="card">
 <h2>🎥 Video Production Checklist</h2>
-<p class="small">Use this checklist while creating and editing your six clips. Checkboxes are saved on this device.</p>
+<p class="small">Your production checklist.</p>
 <div id="checklist">
 <label class="field-label"><input type="checkbox" data-check="clip1" style="width:auto"> Scene 1 video clip created</label>
 <label class="field-label"><input type="checkbox" data-check="clip2" style="width:auto"> Scene 2 video clip created</label>
@@ -117,22 +170,21 @@ CONTINUITY: Keep each character's design, colors, proportions, and accessories i
 <label class="field-label"><input type="checkbox" data-check="clip5" style="width:auto"> Scene 5 video clip created</label>
 <label class="field-label"><input type="checkbox" data-check="clip6" style="width:auto"> Scene 6 video clip created</label>
 <label class="field-label"><input type="checkbox" data-check="watermark" style="width:auto"> Checked clips for unwanted watermarks</label>
-<label class="field-label"><input type="checkbox" data-check="voice" style="width:auto"> Added voice-over / character voices</label>
-<label class="field-label"><input type="checkbox" data-check="captions" style="width:auto"> Added and checked subtitles/captions</label>
+<label class="field-label"><input type="checkbox" data-check="voice" style="width:auto"> Added character voices</label>
+<label class="field-label"><input type="checkbox" data-check="captions" style="width:auto"> Added subtitles</label>
 <label class="field-label"><input type="checkbox" data-check="audio" style="width:auto"> Added music and sound effects</label>
-<label class="field-label"><input type="checkbox" data-check="export" style="width:auto"> Exported and reviewed final 1080 × 1920 video</label>
+<label class="field-label"><input type="checkbox" data-check="export" style="width:auto"> Exported final video</label>
 </div>
 </div>
 
 <div class="card">
-<h2>📌 Production, Approval & YouTube</h2>
-<p class="small">Create the six clips in your chosen video tool, then merge them in a video editor. Add voice-over, captions, music, sound effects, and transitions. Export at 1080 × 1920 for vertical Shorts. Check the export for watermarks and licensing restrictions yourself.</p>
-<p class="small">AI video generation, approval workflows, and YouTube uploading are not connected in this website. Nothing is uploaded automatically.</p>
+<h2>📌 Production Information</h2>
+<p class="small">Actual AI video generation and MP4 rendering are not connected yet. This version provides story organization, prompt creation and browser speech playback.</p>
 </div>
 
 <div class="card">
 <h2>🧹 Project Data</h2>
-<p class="small">Your saved project data stays in this browser on this device. Clearing browser data or using another device may remove or hide it. Download backups before clearing it.</p>
+<p class="small">Your project is saved in this browser on this device.</p>
 <button class="secondary" onclick="downloadBackup()">⬇️ Download Project Backup</button>
 <button class="danger" onclick="clearProject()">Clear Saved Project</button>
 </div>
@@ -140,98 +192,90 @@ CONTINUITY: Keep each character's design, colors, proportions, and accessories i
 <footer>Roblox AI Shorts Studio | Built for original Roblox entertainment</footer>
 
 <script>
-const STORAGE_KEY = "robloxAiShortsStudio_v2";
-let ideasGenerated = 0, lastPrompt = "", organizedScenes = [], originalStory = "", enhancedPrompts = [];
-
-const $ = id => document.getElementById(id);
+const STORAGE_KEY="robloxAiShortsStudio_v2";
+let ideasGenerated=0,lastPrompt="",organizedScenes=[],originalStory="",enhancedPrompts=[];
+let dialogueQueue=[],dialogueIndex=0,dialogueRunId=0;
+const $=id=>document.getElementById(id);
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
 
 function saveProject(){
-  try{
-    const checks = {};
-    document.querySelectorAll("[data-check]").forEach(el => checks[el.dataset.check] = el.checked);
-    const data = {
-      topic:$("topic").value,
-      storyInput:$("storyInput").value,
-      characterGuide:$("characterGuide").value,
-      visualStyle:$("visualStyle").value,
-      aspectRatio:$("aspectRatio").value,
-      ideasGenerated,lastPrompt,originalStory,organizedScenes,enhancedPrompts,checks
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    $("saveStatus").textContent = "✅ Saved automatically on this device.";
-  }catch(e){
-    $("saveStatus").textContent = "⚠️ Browser storage is unavailable. Download a project backup.";
-  }
+try{
+const checks={};
+document.querySelectorAll("[data-check]").forEach(el=>checks[el.dataset.check]=el.checked);
+const data={
+topic:$("topic").value,storyInput:$("storyInput").value,
+characterGuide:$("characterGuide").value,
+visualStyle:$("visualStyle").value,aspectRatio:$("aspectRatio").value,
+dialogueInput:$("dialogueInput").value,
+voiceCharacterA:$("voiceCharacterA").value,
+voiceCharacterB:$("voiceCharacterB").value,
+speechRate:$("speechRate").value,
+ideasGenerated,lastPrompt,originalStory,organizedScenes,enhancedPrompts,checks
+};
+localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+$("saveStatus").textContent="✅ Saved automatically on this device.";
+}catch(e){$("saveStatus").textContent="⚠️ Storage unavailable. Download a backup."}
 }
 
 function restoreProject(){
-  try{
-    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-    if(!data) return;
-    $("topic").value = data.topic || "";
-    $("storyInput").value = data.storyInput || "";
-    $("characterGuide").value = data.characterGuide || $("characterGuide").value;
-    $("visualStyle").value = data.visualStyle || $("visualStyle").value;
-    $("aspectRatio").value = data.aspectRatio || "9:16";
-    ideasGenerated = Number(data.ideasGenerated || 0);
-    lastPrompt = data.lastPrompt || "";
-    originalStory = data.originalStory || "";
-    organizedScenes = Array.isArray(data.organizedScenes) ? data.organizedScenes : [];
-    enhancedPrompts = Array.isArray(data.enhancedPrompts) ? data.enhancedPrompts : [];
-    $("ideasCount").textContent = ideasGenerated;
-    if(lastPrompt) $("result").textContent = lastPrompt;
-    if(organizedScenes.length) renderScenes();
-    if(enhancedPrompts.length) renderEnhanced();
-    Object.entries(data.checks || {}).forEach(([key,val]) => {
-      const el = document.querySelector('[data-check="'+key+'"]');
-      if(el) el.checked = !!val;
-    });
-    if(data.originalStory) $("scriptStatus").textContent = "Restored your previously organized story.";
-  }catch(e){
-    console.warn("Could not restore saved project",e);
-  }
+try{
+const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
+if(!data)return;
+$("topic").value=data.topic||"";
+$("storyInput").value=data.storyInput||"";
+$("characterGuide").value=data.characterGuide||$("characterGuide").value;
+$("visualStyle").value=data.visualStyle||$("visualStyle").value;
+$("aspectRatio").value=data.aspectRatio||"9:16";
+$("dialogueInput").value=data.dialogueInput||"";
+$("voiceCharacterA").value=data.voiceCharacterA||"Alex";
+$("voiceCharacterB").value=data.voiceCharacterB||"Ryan";
+$("speechRate").value=data.speechRate||"1";
+ideasGenerated=Number(data.ideasGenerated||0);
+lastPrompt=data.lastPrompt||"";
+originalStory=data.originalStory||"";
+organizedScenes=Array.isArray(data.organizedScenes)?data.organizedScenes:[];
+enhancedPrompts=Array.isArray(data.enhancedPrompts)?data.enhancedPrompts:[];
+$("ideasCount").textContent=ideasGenerated;
+if(lastPrompt)$("result").textContent=lastPrompt;
+if(organizedScenes.length)renderScenes();
+if(enhancedPrompts.length)renderEnhanced();
+Object.entries(data.checks||{}).forEach(([key,val])=>{
+const el=document.querySelector('[data-check="'+key+'"]');
+if(el)el.checked=!!val;
+});
+if(organizedScenes.length)$("scenesCount").textContent="6 / 6";
+}catch(e){console.warn("Restore failed",e)}
 }
 
-document.addEventListener("input", e => {
-  if(e.target.matches("input,textarea,select")) saveProject();
+document.addEventListener("input",e=>{
+if(e.target.matches("input,textarea,select"))saveProject();
 });
-document.addEventListener("change", e => {
-  if(e.target.matches("input,textarea,select")) saveProject();
+document.addEventListener("change",e=>{
+if(e.target.matches("input,textarea,select"))saveProject();
 });
-
-function pick(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
-}
 
 function generate(){
-  const topic = $("topic").value.trim();
-  if(!topic){
-    alert("Enter a Roblox story topic first!");
-    return;
-  }
-
-  const hooks = [
-    "Nobody believed this noob... until something unbelievable happened!",
-    "Everyone laughed at him, but they were about to regret it!",
-    "He thought it was an ordinary Roblox day. He was completely wrong!",
-    "What happened next shocked the entire server!"
-  ];
-
-  const characters = [
-    "A funny noob who dreams big",
-    "A rich and arrogant Roblox player",
-    "A mysterious stranger with a secret",
-    "A best friend who always causes trouble"
-  ];
-
-  const endings = [
-    "The poorest player secretly owns the entire game!",
-    "The villain turns out to be his best friend!",
-    "The noob becomes the richest player overnight!",
-    "Everyone discovers that the entire adventure was a prank!"
-  ];
-
-  lastPrompt = `ROBLOX AI SHORTS STUDIO — ORIGINAL STORY GENERATION PROMPT
+const topic=$("topic").value.trim();
+if(!topic){alert("Enter a story topic first!");return}
+const hooks=[
+"Nobody believed this noob... until something unbelievable happened!",
+"Everyone laughed at him, but they were about to regret it!",
+"He thought it was an ordinary Roblox day. He was completely wrong!",
+"What happened next shocked the entire server!"
+];
+const characters=[
+"A funny noob who dreams big",
+"A rich and arrogant Roblox player",
+"A mysterious stranger with a secret",
+"A best friend who always causes trouble"
+];
+const endings=[
+"The poorest player secretly owns the entire game!",
+"The villain turns out to be his best friend!",
+"The noob becomes the richest player overnight!",
+"Everyone discovers that the entire adventure was a prank!"
+];
+lastPrompt=`ROBLOX AI SHORTS STUDIO — STORY GENERATION PROMPT
 
 STORY TOPIC:
 ${topic}
@@ -239,14 +283,14 @@ ${topic}
 OPENING HOOK:
 ${pick(hooks)}
 
-MAIN CHARACTER IDEA:
+MAIN CHARACTER:
 ${pick(characters)}
 
-POSSIBLE UNEXPECTED ENDING:
+POSSIBLE ENDING:
 ${pick(endings)}
 
-YOUR TASK:
-Create a funny, original, entertaining Roblox YouTube Short lasting 30–60 seconds.
+TASK:
+Create an original, funny Roblox YouTube Short lasting 30–60 seconds.
 
 OUTPUT EXACTLY SIX SCENES:
 SCENE 1: Introduce the situation and grab attention.
@@ -254,399 +298,394 @@ SCENE 2: Introduce the main problem.
 SCENE 3: Make the situation funny and raise the stakes.
 SCENE 4: Create an unexpected twist.
 SCENE 5: Build suspense toward the reveal.
-SCENE 6: Reveal the unexpected ending with a memorable final beat.
+SCENE 6: Reveal the unexpected ending.
 
 FOR EACH SCENE INCLUDE:
-- Scene number and approximate timing.
+- Approximate timing.
 - Narrator dialogue.
 - Character dialogue.
 - Character actions and expressions.
-- AI VIDEO PROMPT: a detailed visual prompt for generating that scene.
+- Detailed AI video prompt.
+- Sound effects and music cues.
 
-CHARACTER CONSISTENCY:
-Keep every character's appearance, clothing, hair, colors, body proportions, and accessories consistent across all six scenes. If a character returns, describe them consistently.
-
-VIDEO PROMPTS:
-Include Roblox-style 3D visuals, environment/background, character appearance and movement, facial expressions, camera framing and movement, lighting, animation style, and vertical 9:16 composition. Avoid text, subtitles, logos, and watermarks in generated visuals.
-
-ALSO INCLUDE:
-- Suitable background music and sound effects.
-- A clickable thumbnail concept.
-- YouTube title, description, and relevant hashtags.
-
-IMPORTANT:
-Make the story original, fast-paced, easy to follow, and suitable for YouTube Shorts. Do not add a seventh scene.`;
-
-  ideasGenerated++;
-  $("ideasCount").textContent = ideasGenerated;
-  $("result").textContent = lastPrompt;
-  $("copyStatus").textContent = "";
-  saveProject();
+Keep character appearances consistent. Use vertical 9:16 Roblox-style visuals. Make the story fast-paced and suitable for Shorts. Do not add a seventh scene.`;
+ideasGenerated++;
+$("ideasCount").textContent=ideasGenerated;
+$("result").textContent=lastPrompt;
+$("copyStatus").textContent="";
+saveProject();
 }
 
 async function copyText(text,statusEl,message){
-  if(!text){
-    statusEl.textContent = "Nothing to copy yet.";
-    return;
-  }
-  try{
-    if(navigator.clipboard && window.isSecureContext){
-      await navigator.clipboard.writeText(text);
-    }else{
-      const temp=document.createElement("textarea");
-      temp.value=text;
-      temp.style.position="fixed";
-      temp.style.opacity="0";
-      document.body.appendChild(temp);
-      temp.select();
-      const ok=document.execCommand("copy");
-      temp.remove();
-      if(!ok) throw new Error("Copy unavailable");
-    }
-    statusEl.textContent=message;
-  }catch(e){
-    statusEl.textContent="Copy was blocked by your browser. Select the text and copy it manually.";
-  }
+if(!text){statusEl.textContent="Nothing to copy yet.";return}
+try{
+if(navigator.clipboard&&window.isSecureContext){
+await navigator.clipboard.writeText(text);
+}else{
+const temp=document.createElement("textarea");
+temp.value=text;temp.style.position="fixed";temp.style.opacity="0";
+document.body.appendChild(temp);temp.select();
+const ok=document.execCommand("copy");temp.remove();
+if(!ok)throw new Error("Copy unavailable");
+}
+statusEl.textContent=message;
+}catch(e){statusEl.textContent="Copy blocked. Select and copy manually."}
 }
 
 function copyPrompt(){
-  if(!lastPrompt){
-    alert("Generate a story prompt first!");
-    return;
-  }
-  copyText(lastPrompt,$("copyStatus"),"✅ Story prompt copied!");
+if(!lastPrompt){alert("Generate a prompt first!");return}
+copyText(lastPrompt,$("copyStatus"),"✅ Prompt copied!");
 }
 
 function downloadText(text,filename){
-  if(!text){
-    alert("There is no content to download yet.");
-    return;
-  }
-  const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download=filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+if(!text){alert("Nothing to download yet.");return}
+const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;a.download=filename;
+document.body.appendChild(a);a.click();a.remove();
+URL.revokeObjectURL(url);
 }
 
 function downloadStory(){
-  if(!originalStory){
-    $("scriptStatus").textContent="Organize your story first.";
-    return;
-  }
-  downloadText(originalStory,"roblox-short-complete-story.txt");
-  $("scriptStatus").textContent="✅ Story download started.";
-}
-
-function clearSceneOutput(){
-  $("scriptOutput").replaceChildren();
-  $("enhancedOutput").replaceChildren();
+if(!originalStory){$("scriptStatus").textContent="Organize your story first.";return}
+downloadText(originalStory,"roblox-short-story.txt");
 }
 
 function organizeStory(){
-  const story=$("storyInput").value.trim();
-  const output=$("scriptOutput");
-  const status=$("scriptStatus");
-
-  if(!story){
-    status.textContent="⚠️ Paste your story first!";
-    organizedScenes=[];
-    originalStory="";
-    enhancedPrompts=[];
-    clearSceneOutput();
-    saveProject();
-    return;
-  }
-
-  const sectionRegex=/^\s*(?:#{1,6}\s*)?(?:\*\*)?(?:\d+\.\s*)?(?:SIX[-\s–—]*SCENE STORY|6[-\s–—]*SCENE STORY)\b.*$/im;
-  const sectionMatch=sectionRegex.exec(story);
-  let sectionStart=sectionMatch ? sectionMatch.index+sectionMatch[0].length : 0;
-  let remaining=story.slice(sectionStart);
-
-  if(sectionMatch){
-    const nextHeading=/^\s*(?:#{1,6}\s*)?(?:\*\*)?\d+\.\s*(?:CHARACTER DIALOGUES|AI VIDEO|BACKGROUND MUSIC|VIDEO EDITING|EDITING SETTINGS)\b/im;
-    const next=nextHeading.exec(remaining);
-    if(next) remaining=remaining.slice(0,next.index);
-  }
-
-  const headingRegex=/^\s*(?:#{1,6}\s*)?(?:\*\*)?SCENE\s*([1-6])\s*(?:[-–—:.)]|\b)(?:\s*[-–—:.)]?\s*)\S.*?(?:\*\*)?\s*$/gim;
-  const matches=[...remaining.matchAll(headingRegex)];
-
-  if(matches.length!==6){
-    status.textContent="⚠️ Found "+matches.length+" scene headings. Please include SCENE 1 through SCENE 6 exactly once.";
-    organizedScenes=[];
-    originalStory="";
-    enhancedPrompts=[];
-    clearSceneOutput();
-    $("scenesCount").textContent="0 / 6";
-    saveProject();
-    return;
-  }
-
-  const scenes=matches.map((m,i)=>({
-    number:Number(m[1]),
-    content:remaining.slice(m.index,i+1<matches.length?matches[i+1].index:remaining.length).trim()
-  }));
-
-  const nums=scenes.map(s=>s.number);
-  if(new Set(nums).size!==6 || ![1,2,3,4,5,6].every(n=>nums.includes(n))){
-    status.textContent="⚠️ Please include each scene from 1 to 6 exactly once.";
-    organizedScenes=[];
-    originalStory="";
-    enhancedPrompts=[];
-    clearSceneOutput();
-    $("scenesCount").textContent="0 / 6";
-    saveProject();
-    return;
-  }
-
-  organizedScenes=scenes.sort((a,b)=>a.number-b.number);
-  originalStory=story;
-  enhancedPrompts=[];
-  renderScenes();
-  $("enhancedOutput").replaceChildren();
-  $("scenesCount").textContent="6 / 6";
-  status.textContent="✅ Success! All six scenes organized correctly. You can now enhance their video prompts.";
-  saveProject();
+const story=$("storyInput").value.trim();
+if(!story){$("scriptStatus").textContent="Paste your story first.";return}
+const matches=[...story.matchAll(/^\s*(?:#{1,6}\s*)?(?:\*\*)?SCENE\s*([1-6])\s*(?:[-–—:.)]|\b).*$/gim)];
+if(matches.length!==6){
+$("scriptStatus").textContent="Found "+matches.length+" scene headings. Include SCENE 1 through SCENE 6 exactly once.";
+return;
+}
+const scenes=matches.map((m,i)=>({
+number:Number(m[1]),
+content:story.slice(m.index,i+1<matches.length?matches[i+1].index:story.length).trim()
+}));
+const nums=scenes.map(s=>s.number);
+if(new Set(nums).size!==6||![1,2,3,4,5,6].every(n=>nums.includes(n))){
+$("scriptStatus").textContent="Include each scene from 1 to 6 exactly once.";
+return;
+}
+organizedScenes=scenes.sort((a,b)=>a.number-b.number);
+originalStory=story;enhancedPrompts=[];
+renderScenes();
+$("enhancedOutput").replaceChildren();
+$("scenesCount").textContent="6 / 6";
+$("scriptStatus").textContent="✅ All six scenes organized!";
+saveProject();
 }
 
 function renderScenes(){
-  const output=$("scriptOutput");
-  output.replaceChildren();
-
-  organizedScenes.forEach(scene=>{
-    const card=document.createElement("div");
-    card.className="scene-card";
-
-    const h=document.createElement("h3");
-    h.textContent="🎬 Scene "+scene.number;
-
-    const content=document.createElement("div");
-    content.className="scene-content";
-    content.textContent=scene.content;
-
-    const btn=document.createElement("button");
-    btn.textContent="📋 Copy Scene "+scene.number;
-    btn.onclick=()=>copyText(scene.content,$("scriptStatus"),"✅ Scene "+scene.number+" copied!");
-
-    card.append(h,content,btn);
-    output.appendChild(card);
-  });
+const output=$("scriptOutput");output.replaceChildren();
+organizedScenes.forEach(scene=>{
+const card=document.createElement("div");card.className="scene-card";
+const h=document.createElement("h3");h.textContent="🎬 Scene "+scene.number;
+const content=document.createElement("div");content.className="scene-content";
+content.textContent=scene.content;
+const btn=document.createElement("button");btn.textContent="📋 Copy Scene "+scene.number;
+btn.onclick=()=>copyText(scene.content,$("scriptStatus"),"Scene copied!");
+card.append(h,content,btn);output.appendChild(card);
+});
 }
 
 function copyEntireScript(){
-  if(!originalStory){
-    $("scriptStatus").textContent="⚠️ Organize your story first!";
-    return;
-  }
-  copyText(originalStory,$("scriptStatus"),"✅ Complete story copied!");
+if(!originalStory){$("scriptStatus").textContent="Organize your story first.";return}
+copyText(originalStory,$("scriptStatus"),"✅ Complete story copied!");
 }
 
 function extractVisualPrompt(sceneText){
-  const lines=sceneText.split(/\r?\n/);
-  const start=lines.findIndex(line=>/AI\s+VIDEO\s+PROMPT\s*:/i.test(line));
-
-  if(start<0){
-    return sceneText.replace(/^SCENE\s*[1-6][^\n]*\n?/i,"").trim();
-  }
-
-  const first=lines[start].replace(/^.*?AI\s+VIDEO\s+PROMPT\s*:\s*/i,"").trim();
-  const collected=[];
-  if(first) collected.push(first);
-
-  for(let i=start+1;i<lines.length;i++){
-    if(/^\s*(?:NARRATOR|CHARACTER\s+DIALOGUE|DIALOGUE|AUDIO|SOUND\s+EFFECTS?|MUSIC|THUMBNAIL|YOUTUBE|SCENE\s*[1-6]\b)\s*:/i.test(lines[i])) break;
-    collected.push(lines[i]);
-  }
-
-  return collected.join("\n").trim() || sceneText;
+const lines=sceneText.split(/\r?\n/);
+const start=lines.findIndex(line=>/AI\s+VIDEO\s+PROMPT\s*:/i.test(line));
+if(start<0)return sceneText.replace(/^SCENE\s*[1-6][^\n]*\n?/i,"").trim();
+const collected=[];
+const first=lines[start].replace(/^.*?AI\s+VIDEO\s+PROMPT\s*:\s*/i,"").trim();
+if(first)collected.push(first);
+for(let i=start+1;i<lines.length;i++){
+if(/^\s*(?:NARRATOR|CHARACTER\s+DIALOGUE|DIALOGUE|AUDIO|SOUND\s+EFFECTS?|MUSIC|THUMBNAIL|YOUTUBE|SCENE\s*[1-6]\b)\s*:/i.test(lines[i]))break;
+collected.push(lines[i]);
+}
+return collected.join("\n").trim()||sceneText;
 }
 
 function buildEnhancedPrompt(scene){
-  const visual=extractVisualPrompt(scene.content);
-  const guide=$("characterGuide").value.trim();
-  const style=$("visualStyle").value;
-  const ratio=$("aspectRatio").value;
-  const timing=(scene.content.match(/\b\d{1,2}\s*(?:-|–|to)\s*\d{1,2}\s*(?:sec|seconds?)\b/i)||[])[0] || "Use a short, clear shot appropriate to a 30–60 second short";
+return `SCENE ${scene.number} — ENHANCED VIDEO PROMPT
 
-  return `SCENE ${scene.number} — ENHANCED AI VIDEO PROMPT
+SOURCE:
+${extractVisualPrompt(scene.content)}
 
-SOURCE SCENE:
-${visual}
+CHARACTER CONTINUITY:
+${$("characterGuide").value}
 
-CHARACTER APPEARANCE AND CONTINUITY:
-${guide || "Keep all recurring Roblox characters visually identical across scenes."}
-
-ENVIRONMENT AND BACKGROUND:
-Create a clear Roblox game environment that matches the action and story context. Keep the location coherent and avoid unrelated background changes.
-
-ACTION AND EXPRESSIONS:
-Show the characters performing the actions described in the source scene. Use readable, expressive Roblox-style body language and facial expressions. Make the action easy to understand at a glance. Avoid confusing or unnecessary movements.
+VISUAL STYLE:
+${$("visualStyle").value}
 
 CAMERA:
-Use dynamic but smooth cinematic camera framing. Choose suitable close-ups, medium shots, wide shots, and camera movement to emphasize the important action. Keep the main characters clearly visible.
+Use smooth cinematic camera movement, close-ups and wide shots as appropriate.
 
-TIMING:
-${timing}
+FORMAT:
+${$("aspectRatio").value}, optimized for YouTube Shorts.
 
-LIGHTING AND ANIMATION:
-${style}. Use polished Roblox-style 3D animation, smooth character movement, expressive poses, consistent proportions, and clear visual storytelling.
-
-VIDEO FORMAT:
-${ratio} aspect ratio. Compose the scene for the selected format. Keep important characters and actions inside the frame.
+ANIMATION:
+Polished Roblox-style 3D animation, expressive poses and consistent character proportions.
 
 NEGATIVE PROMPT:
-No character redesigns, no changing outfits, no inconsistent hair, no extra limbs, no distorted faces, no duplicated characters, no blurry characters, no random objects, no unwanted text, no subtitles, no logos, and no watermarks.`;
+No character redesigns, changing outfits, extra limbs, distorted faces, duplicated characters, random text, logos or watermarks.`;
 }
 
 function enhanceAll(){
-  const status=$("enhanceStatus");
-
-  if(organizedScenes.length!==6){
-    status.textContent="⚠️ First paste your story and organize all six scenes.";
-    return;
-  }
-
-  enhancedPrompts=organizedScenes.map(scene=>({
-    number:scene.number,
-    prompt:buildEnhancedPrompt(scene)
-  }));
-
-  renderEnhanced();
-  status.textContent="✅ Successfully enhanced all six scene prompts!";
-  saveProject();
+if(organizedScenes.length!==6){
+$("enhanceStatus").textContent="Organize all six scenes first.";return;
+}
+enhancedPrompts=organizedScenes.map(scene=>({
+number:scene.number,prompt:buildEnhancedPrompt(scene)
+}));
+renderEnhanced();
+$("enhanceStatus").textContent="✅ All six prompts enhanced!";
+saveProject();
 }
 
 function renderEnhanced(){
-  const output=$("enhancedOutput");
-  output.replaceChildren();
-
-  enhancedPrompts.forEach(item=>{
-    const card=document.createElement("div");
-    card.className="prompt-card";
-
-    const heading=document.createElement("h3");
-    heading.textContent="✨ Enhanced Scene "+item.number;
-
-    const content=document.createElement("div");
-    content.className="prompt-content";
-    content.textContent=item.prompt;
-
-    const button=document.createElement("button");
-    button.textContent="📋 Copy Enhanced Scene "+item.number;
-    button.onclick=()=>{
-      copyText(
-        item.prompt,
-        $("enhanceStatus"),
-        "✅ Enhanced Scene "+item.number+" copied!"
-      );
-    };
-
-    card.append(heading,content,button);
-    output.appendChild(card);
-  });
+const output=$("enhancedOutput");output.replaceChildren();
+enhancedPrompts.forEach(item=>{
+const card=document.createElement("div");card.className="prompt-card";
+const h=document.createElement("h3");h.textContent="✨ Enhanced Scene "+item.number;
+const content=document.createElement("div");content.className="prompt-content";
+content.textContent=item.prompt;
+const btn=document.createElement("button");btn.textContent="📋 Copy Enhanced Scene";
+btn.onclick=()=>copyText(item.prompt,$("enhanceStatus"),"Prompt copied!");
+card.append(h,content,btn);output.appendChild(card);
+});
 }
 
 function copyAllEnhanced(){
-  if(!enhancedPrompts.length){
-    $("enhanceStatus").textContent="⚠️ Enhance all six scenes first.";
-    return;
-  }
-
-  const all=enhancedPrompts
-    .map(item=>item.prompt)
-    .join("\n\n========================================\n\n");
-
-  copyText(
-    all,
-    $("enhanceStatus"),
-    "✅ All six enhanced prompts copied!"
-  );
+if(!enhancedPrompts.length){$("enhanceStatus").textContent="Enhance scenes first.";return}
+copyText(enhancedPrompts.map(x=>x.prompt).join("\n\n"),$("enhanceStatus"),"All prompts copied!");
 }
 
 function downloadAllEnhanced(){
-  if(!enhancedPrompts.length){
-    $("enhanceStatus").textContent="⚠️ Enhance all six scenes first.";
-    return;
-  }
-
-  const all=enhancedPrompts
-    .map(item=>item.prompt)
+if(!enhancedPrompts.length){$("enhanceStatus").textContent="Enhance scenes first.";return}
+downloadText(enhancedPrompts.map(x=>x.promp    .map(item=>item.prompt)
     .join("\n\n========================================\n\n");
 
   downloadText(all,"roblox-all-six-enhanced-video-prompts.txt");
   $("enhanceStatus").textContent="✅ Enhanced prompts download started.";
 }
 
-function downloadBackup(){
-  const checks={};
+function parseDialogueLines(text){
+  return text.split(/\r?\n/)
+    .map(line=>line.trim())
+    .filter(Boolean)
+    .map(line=>{
+      const match=line.match(/^([^:]{1,35}):\s*(.+)$/);
+      return match
+        ? {speaker:match[1].trim(),text:match[2].trim()}
+        : {speaker:"Narrator",text:line};
+    });
+}
 
-  document.querySelectorAll("[data-check]").forEach(el=>{
-    checks[el.dataset.check]=el.checked;
+function buildDialogueFromScenes(){
+  if(organizedScenes.length!==6){
+    $("voiceStatus").textContent="Organize all six scenes first.";
+    return;
+  }
+
+  const found=[];
+  organizedScenes.forEach(scene=>{
+    scene.content.split(/\r?\n/).forEach(line=>{
+      const match=line.trim().match(
+        /^(?:[-*]\s*)?([A-Za-z][A-Za-z0-9 _-]{0,30}):\s*(.+)$/
+      );
+
+      if(match && !/^(AI VIDEO PROMPT|VIDEO PROMPT|SOUND EFFECTS?|MUSIC|TIMING|ACTION|CAMERA|SETTING)$/i.test(match[1])){
+        found.push(match[1].trim()+": "+match[2].trim());
+      }
+    });
   });
 
-  const backup={
-    topic:$("topic").value,
-    storyInput:$("storyInput").value,
-    characterGuide:$("characterGuide").value,
-    visualStyle:$("visualStyle").value,
-    aspectRatio:$("aspectRatio").value,
-    ideasGenerated,
-    lastPrompt,
-    originalStory,
-    organizedScenes,
-    enhancedPrompts,
-    checks,
-    backupCreated:new Date().toISOString()
+  if(!found.length){
+    $("voiceStatus").textContent="No labelled dialogue found. Use lines like Alex: Hello!";
+    return;
+  }
+
+  $("dialogueInput").value=found.join("\n");
+  saveProject();
+  $("voiceStatus").textContent="✅ Extracted "+found.length+" dialogue lines.";
+}
+
+function loadSpeechVoices(){
+  if(!("speechSynthesis" in window)) return;
+
+  const select=$("speechVoice");
+  const previous=select.value;
+  select.replaceChildren();
+
+  const defaultOption=document.createElement("option");
+  defaultOption.value="";
+  defaultOption.textContent="Default device voice";
+  select.appendChild(defaultOption);
+
+  const voices=window.speechSynthesis.getVoices();
+
+  voices.forEach((voice,index)=>{
+    const option=document.createElement("option");
+    option.value=String(index);
+    option.textContent=voice.name+" ("+voice.lang+")";
+    select.appendChild(option);
+  });
+
+  if([...select.options].some(option=>option.value===previous)){
+    select.value=previous;
+  }
+}
+
+function selectedSpeechVoice(){
+  const voices=window.speechSynthesis.getVoices();
+  const value=$("speechVoice").value;
+  return value==="" ? null : (voices[Number(value)] || null);
+}
+
+function speakLine(item,runId){
+  if(runId!==dialogueRunId) return;
+
+  if(dialogueIndex>=dialogueQueue.length){
+    $("voiceStatus").textContent="✅ Dialogue playback finished.";
+    $("voiceLineStatus").textContent="All lines played.";
+    $("voiceProgress").style.width="100%";
+    return;
+  }
+
+  const utterance=new SpeechSynthesisUtterance(item.text);
+  const voice=selectedSpeechVoice();
+
+  if(voice) utterance.voice=voice;
+
+  utterance.rate=Number($("speechRate").value)||1;
+  utterance.pitch=/narrator/i.test(item.speaker)?0.92:1.05;
+
+  utterance.onstart=()=>{
+    if(runId!==dialogueRunId) return;
+    $("voiceLineStatus").textContent=
+      "Line "+(dialogueIndex+1)+" of "+dialogueQueue.length+
+      " — "+item.speaker+": "+item.text;
+
+    $("voiceProgress").style.width=
+      (dialogueIndex/dialogueQueue.length*100)+"%";
   };
 
-  downloadText(
-    JSON.stringify(backup,null,2),
-    "roblox-shorts-studio-project-backup.json"
-  );
+  utterance.onend=()=>{
+    if(runId!==dialogueRunId) return;
+    dialogueIndex++;
+    speakLine(dialogueQueue[dialogueIndex],runId);
+  };
 
-  $("saveStatus").textContent="✅ Project backup download started.";
+  utterance.onerror=(event)=>{
+    if(runId!==dialogueRunId) return;
+    $("voiceStatus").textContent=
+      "Voice playback issue: "+(event.error||"speech could not play")+
+      ". Try another device voice.";
+  };
+
+  window.speechSynthesis.speak(utterance);
 }
 
-function clearProject(){
-  const confirmed=confirm(
-    "Are you sure you want to clear your saved project? Download a backup first if you want to keep your work."
+function playDialogue(){
+  if(!("speechSynthesis" in window)){
+    $("voiceStatus").textContent="⚠️ Speech synthesis is not supported in this browser.";
+    return;
+  }
+
+  dialogueQueue=parseDialogueLines($("dialogueInput").value);
+
+  if(!dialogueQueue.length){
+    $("voiceStatus").textContent="Enter dialogue lines first, using Speaker: words.";
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  dialogueRunId++;
+  dialogueIndex=0;
+  $("voiceProgress").style.width="0%";
+  $("voiceStatus").textContent="▶️ Playing dialogue using your device's speech engine.";
+
+  speakLine(dialogueQueue[0],dialogueRunId);
+}
+
+function playSelectedDialogue(){
+  if(!("speechSynthesis" in window)){
+    $("voiceStatus").textContent="Speech synthesis is not supported in this browser.";
+    return;
+  }
+
+  const lines=parseDialogueLines($("dialogueInput").value);
+  if(!lines.length){
+    $("voiceStatus").textContent="Enter a dialogue line first.";
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance=new SpeechSynthesisUtterance(lines[0].text);
+  const voice=selectedSpeechVoice();
+
+  if(voice) utterance.voice=voice;
+  utterance.rate=Number($("speechRate").value)||1;
+
+  window.speechSynthesis.speak(utterance);
+  $("voiceStatus").textContent="🔊 Playing first line: "+lines[0].speaker;
+}
+
+function previewVoice(){
+  if(!("speechSynthesis" in window)){
+    $("voiceStatus").textContent="Speech synthesis is not supported.";
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance=new SpeechSynthesisUtterance(
+    "Hello! Welcome to Roblox AI Shorts Studio. Let's make a great short!"
   );
 
-  if(!confirmed) return;
+  const voice=selectedSpeechVoice();
+  if(voice) utterance.voice=voice;
 
-  localStorage.removeItem(STORAGE_KEY);
+  utterance.rate=Number($("speechRate").value)||1;
+  window.speechSynthesis.speak(utterance);
 
-  ideasGenerated=0;
-  lastPrompt="";
-  organizedScenes=[];
-  originalStory="";
-  enhancedPrompts=[];
-
-  $("topic").value="";
-  $("storyInput").value="";
-  $("ideasCount").textContent="0";
-  $("scenesCount").textContent="0 / 6";
-  $("result").textContent="Your story-generation prompt will appear here.";
-  $("scriptStatus").textContent="";
-  $("enhanceStatus").textContent="";
-  $("copyStatus").textContent="";
-
-  $("scriptOutput").replaceChildren();
-  $("enhancedOutput").replaceChildren();
-
-  document.querySelectorAll("[data-check]").forEach(el=>{
-    el.checked=false;
-  });
-
-  $("saveStatus").textContent="Project cleared. Your new work will save automatically.";
-
-  saveProject();
+  $("voiceStatus").textContent="Testing selected voice.";
 }
+
+function stopDialogue(){
+  if("speechSynthesis" in window) window.speechSynthesis.cancel();
+
+  dialogueRunId++;
+  $("voiceStatus").textContent="⏹ Voice playback stopped.";
+  $("voiceLineStatus").textContent="Playback stopped.";
+}
+
+function downloadDialogue(){
+  const text=$("dialogueInput").value.trim();
+
+  if(!text){
+    $("voiceStatus").textContent="No dialogue to download.";
+    return;
+  }
+
+  downloadText(text,"roblox-short-dialogue-script.txt");
+  $("voiceStatus").textContent="✅ Dialogue script download started.";
+}
+
+if("speechSynthesis" in window){
+  loadSpeechVoices();
+  window.speechSynthesis.onvoiceschanged=loadSpeechVoices;
+}
+
+document.addEventListener("input",e=>{
+  if(e.target && e.target.id==="dialogueInput") saveProject();
+});
 
 restoreProject();
 </script>
