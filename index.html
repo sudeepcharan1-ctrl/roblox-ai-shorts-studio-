@@ -69,11 +69,9 @@ margin:5px 4px 5px 0;
 cursor:pointer;
 }
 
-button:active{
-opacity:0.8;
-}
+button:active{opacity:0.8}
 
-input{
+input,textarea{
 width:100%;
 padding:12px;
 background:#11121d;
@@ -81,6 +79,13 @@ color:white;
 border:1px solid #444;
 border-radius:8px;
 margin:10px 0;
+font-family:Arial,sans-serif;
+}
+
+textarea{
+min-height:190px;
+resize:vertical;
+line-height:1.5;
 }
 
 .small{
@@ -88,13 +93,32 @@ color:#aaa;
 font-size:13px;
 }
 
-#result{
+#result,.scene-content{
 white-space:pre-wrap;
 line-height:1.6;
 overflow-wrap:anywhere;
 background:#11121d;
 padding:14px;
 border-radius:9px;
+}
+
+.scene-card{
+background:#24253a;
+border:1px solid #44415f;
+border-radius:12px;
+padding:14px;
+margin:12px 0;
+}
+
+.scene-card h3{
+color:#c4b5fd;
+font-size:16px;
+margin-top:0;
+}
+
+.status{
+color:#a78bfa;
+font-size:13px;
 }
 
 footer{
@@ -155,12 +179,44 @@ Your story prompt will appear here.
 </p>
 </div>
 
+<!-- ROBLOX SCRIPT STUDIO -->
+
 <div class="card">
-<h2>📝 Script Generator</h2>
+
+<h2>🎬 Roblox Script Studio</h2>
+
 <p class="small">
-Your six-scene story, character dialogues and script instructions
-will be included in the generated prompt.
+Paste your complete ChatGPT-generated Roblox story below.
+The studio will organize it into six scene cards.
 </p>
+
+<textarea
+id="storyInput"
+placeholder="Paste your complete Roblox story here...
+
+Example:
+
+Scene 1: Biggest Dream
+Narrator: ...
+
+Scene 2: Mysterious Treasure
+Narrator: ...
+
+Continue up to Scene 6..."
+></textarea>
+
+<button onclick="organizeStory()">
+🎬 Organize Into Scenes
+</button>
+
+<button onclick="copyEntireScript()">
+📋 Copy Entire Script
+</button>
+
+<p id="scriptStatus" class="status"></p>
+
+<div id="scriptOutput"></div>
+
 </div>
 
 <div class="card">
@@ -193,8 +249,10 @@ Roblox AI Shorts Studio | Built for original Roblox entertainment
 <script>
 
 let ideasGenerated = 0;
-
 let lastPrompt = "";
+let organizedScenes = [];
+
+/* STORY IDEA GENERATOR */
 
 function generate(){
 
@@ -324,31 +382,188 @@ alert('Generate a story prompt first!');
 return;
 }
 
+await copyText(
+lastPrompt,
+document.getElementById('copyStatus'),
+"✅ Story prompt copied!"
+);
+
+/* FALLBACK MESSAGE IS SET BY copyText */
+
+}
+
+/* COPY HELPER */
+
+async function copyText(text,statusElement,successMessage){
+
 try{
 
-await navigator.clipboard.writeText(lastPrompt);
-
-document.getElementById('copyStatus').textContent =
-"✅ Story prompt copied! Paste it into ChatGPT.";
-
-}catch(error){
+if(navigator.clipboard && window.isSecureContext){
+await navigator.clipboard.writeText(text);
+statusElement.textContent = successMessage;
+return;
+}
 
 const temp = document.createElement('textarea');
-
-temp.value = lastPrompt;
+temp.value = text;
+temp.style.position = 'fixed';
+temp.style.opacity = '0';
 
 document.body.appendChild(temp);
-
 temp.select();
 
-document.execCommand('copy');
+const copied = document.execCommand('copy');
 
 document.body.removeChild(temp);
 
-document.getElementById('copyStatus').textContent =
-"✅ Copy attempted. Paste your prompt into ChatGPT.";
+statusElement.textContent = copied
+? successMessage
+: "Copy was not successful. Please select and copy manually.";
+
+}catch(error){
+
+statusElement.textContent =
+"Copy was not successful. Please select and copy manually.";
 
 }
+
+}
+
+/* ROBLOX SCRIPT STUDIO */
+
+function organizeStory(){
+
+const story = document.getElementById('storyInput').value.trim();
+
+const output = document.getElementById('scriptOutput');
+const status = document.getElementById('scriptStatus');
+
+if(!story){
+status.textContent = "⚠️ Paste your story first!";
+output.replaceChildren();
+return;
+}
+
+/* Find headings such as Scene 1, Scene 2 ... Scene 6 */
+
+const headingRegex =
+/^\s*(?:#{1,6}\s*)?Scene\s*([1-6])\b.*$/gim;
+
+const matches = [...story.matchAll(headingRegex)];
+
+if(matches.length !== 6){
+
+status.textContent =
+"⚠️ Could not find exactly six scene headings. Please use headings like Scene 1, Scene 2 ... Scene 6.";
+
+output.replaceChildren();
+organizedScenes = [];
+return;
+
+}
+
+/* Check that all six scene numbers exist in order */
+
+const numbers = matches.map(match => Number(match[1]));
+
+if(![1,2,3,4,5,6].every(number => numbers.includes(number))){
+
+status.textContent =
+"⚠️ Please include all six scene headings: Scene 1 to Scene 6.";
+
+output.replaceChildren();
+organizedScenes = [];
+return;
+
+}
+
+/* Extract each scene */
+
+const scenes = [];
+
+for(let i = 0; i < matches.length; i++){
+
+const start = matches[i].index;
+
+const end = i + 1 < matches.length
+? matches[i + 1].index
+: story.length;
+
+const sceneText = story.slice(start,end).trim();
+
+scenes.push({
+number: Number(matches[i][1]),
+content: sceneText
+});
+
+}
+
+scenes.sort((a,b) => a.number - b.number);
+
+organizedScenes = scenes;
+
+output.replaceChildren();
+
+scenes.forEach(scene => {
+
+const card = document.createElement('div');
+card.className = 'scene-card';
+
+const heading = document.createElement('h3');
+heading.textContent = '🎬 Scene ' + scene.number;
+
+const content = document.createElement('div');
+content.className = 'scene-content';
+content.textContent = scene.content;
+
+const button = document.createElement('button');
+button.textContent = '📋 Copy Scene ' + scene.number;
+
+button.addEventListener('click', async () => {
+
+await copyText(
+scene.content,
+status,
+'✅ Scene ' + scene.number + ' copied!'
+);
+
+});
+
+card.appendChild(heading);
+card.appendChild(content);
+card.appendChild(button);
+
+output.appendChild(card);
+
+});
+
+status.textContent =
+"✅ Successfully organized all six scenes!";
+
+}
+
+/* COPY COMPLETE SCRIPT */
+
+async function copyEntireScript(){
+
+if(organizedScenes.length !== 6){
+
+document.getElementById('scriptStatus').textContent =
+"⚠️ Organize your six scenes first!";
+
+return;
+
+}
+
+const completeScript = organizedScenes
+.map(scene => scene.content)
+.join('\n\n');
+
+await copyText(
+completeScript,
+document.getElementById('scriptStatus'),
+"✅ Complete six-scene script copied!"
+);
 
 }
 
