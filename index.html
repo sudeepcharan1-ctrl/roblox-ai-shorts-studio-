@@ -186,23 +186,14 @@ Your story prompt will appear here.
 <h2>🎬 Roblox Script Studio</h2>
 
 <p class="small">
-Paste your complete ChatGPT-generated Roblox story below.
-The studio will organize it into six scene cards.
+Paste your complete ChatGPT-generated Roblox story.
+The studio will recognize your six scene headings
+and organize them into separate cards.
 </p>
 
 <textarea
 id="storyInput"
-placeholder="Paste your complete Roblox story here...
-
-Example:
-
-Scene 1: Biggest Dream
-Narrator: ...
-
-Scene 2: Mysterious Treasure
-Narrator: ...
-
-Continue up to Scene 6..."
+placeholder="Paste your complete Roblox story here..."
 ></textarea>
 
 <button onclick="organizeStory()">
@@ -251,6 +242,7 @@ Roblox AI Shorts Studio | Built for original Roblox entertainment
 let ideasGenerated = 0;
 let lastPrompt = "";
 let organizedScenes = [];
+let originalStory = "";
 
 /* STORY IDEA GENERATOR */
 
@@ -375,23 +367,6 @@ document.getElementById('copyStatus').textContent = "";
 
 }
 
-async function copyPrompt(){
-
-if(!lastPrompt){
-alert('Generate a story prompt first!');
-return;
-}
-
-await copyText(
-lastPrompt,
-document.getElementById('copyStatus'),
-"✅ Story prompt copied!"
-);
-
-/* FALLBACK MESSAGE IS SET BY copyText */
-
-}
-
 /* COPY HELPER */
 
 async function copyText(text,statusElement,successMessage){
@@ -418,14 +393,31 @@ document.body.removeChild(temp);
 
 statusElement.textContent = copied
 ? successMessage
-: "Copy was not successful. Please select and copy manually.";
+: "Copy failed. Please select and copy manually.";
 
 }catch(error){
 
 statusElement.textContent =
-"Copy was not successful. Please select and copy manually.";
+"Copy failed. Please select and copy manually.";
 
 }
+
+}
+
+/* COPY STORY PROMPT */
+
+async function copyPrompt(){
+
+if(!lastPrompt){
+alert('Generate a story prompt first!');
+return;
+}
+
+await copyText(
+lastPrompt,
+document.getElementById('copyStatus'),
+'✅ Story prompt copied!'
+);
 
 }
 
@@ -433,10 +425,14 @@ statusElement.textContent =
 
 function organizeStory(){
 
-const story = document.getElementById('storyInput').value.trim();
+const story =
+document.getElementById('storyInput').value.trim();
 
-const output = document.getElementById('scriptOutput');
-const status = document.getElementById('scriptStatus');
+const output =
+document.getElementById('scriptOutput');
+
+const status =
+document.getElementById('scriptStatus');
 
 if(!story){
 status.textContent = "⚠️ Paste your story first!";
@@ -444,65 +440,77 @@ output.replaceChildren();
 return;
 }
 
-/* Find headings such as Scene 1, Scene 2 ... Scene 6 */
+/* Accept multiple heading formats:
+   SCENE 1 – TITLE
+   Scene 1: TITLE
+   1. SCENE: TITLE
+   **SCENE 1 – TITLE**
+*/
 
 const headingRegex =
-/^\s*(?:#{1,6}\s*)?Scene\s*([1-6])\b.*$/gim;
+/^\s*(?:#{1,6}\s*)?(?:\*\*)?(?:SCENE\s*([1-6])\b|([1-6])\s*[.)-]\s*SCENE\b)(?:\*\*)?.*$/gim;
 
 const matches = [...story.matchAll(headingRegex)];
 
 if(matches.length !== 6){
 
 status.textContent =
-"⚠️ Could not find exactly six scene headings. Please use headings like Scene 1, Scene 2 ... Scene 6.";
+"⚠️ Found " + matches.length +
+" scene headings. Please include exactly six headings: SCENE 1 through SCENE 6.";
 
 output.replaceChildren();
 organizedScenes = [];
+originalStory = "";
 return;
 
 }
 
-/* Check that all six scene numbers exist in order */
+/* Extract scene numbers */
 
-const numbers = matches.map(match => Number(match[1]));
+const scenes = matches.map((match,index) => {
 
-if(![1,2,3,4,5,6].every(number => numbers.includes(number))){
+const number = Number(match[1] || match[2]);
 
-status.textContent =
-"⚠️ Please include all six scene headings: Scene 1 to Scene 6.";
+const start = match.index;
 
-output.replaceChildren();
-organizedScenes = [];
-return;
-
-}
-
-/* Extract each scene */
-
-const scenes = [];
-
-for(let i = 0; i < matches.length; i++){
-
-const start = matches[i].index;
-
-const end = i + 1 < matches.length
-? matches[i + 1].index
+const end = index + 1 < matches.length
+? matches[index + 1].index
 : story.length;
 
-const sceneText = story.slice(start,end).trim();
+return {
+number: number,
+content: story.slice(start,end).trim()
+};
 
-scenes.push({
-number: Number(matches[i][1]),
-content: sceneText
 });
 
+/* Check for all six unique scene numbers */
+
+const numbers = scenes.map(scene => scene.number);
+
+if(![1,2,3,4,5,6].every(number => numbers.includes(number)) ||
+new Set(numbers).size !== 6){
+
+status.textContent =
+"⚠️ Please include each scene number exactly once, from SCENE 1 to SCENE 6.";
+
+output.replaceChildren();
+organizedScenes = [];
+originalStory = "";
+return;
+
 }
+
+/* Sort scenes into correct order */
 
 scenes.sort((a,b) => a.number - b.number);
 
 organizedScenes = scenes;
+originalStory = story;
 
 output.replaceChildren();
+
+/* Create individual scene cards */
 
 scenes.forEach(scene => {
 
@@ -538,31 +546,27 @@ output.appendChild(card);
 });
 
 status.textContent =
-"✅ Successfully organized all six scenes!";
+"✅ Success! All six scenes organized correctly.";
 
 }
 
-/* COPY COMPLETE SCRIPT */
+/* COPY COMPLETE ORIGINAL STORY */
 
 async function copyEntireScript(){
 
-if(organizedScenes.length !== 6){
+if(!originalStory){
 
 document.getElementById('scriptStatus').textContent =
-"⚠️ Organize your six scenes first!";
+"⚠️ Organize your story first!";
 
 return;
 
 }
 
-const completeScript = organizedScenes
-.map(scene => scene.content)
-.join('\n\n');
-
 await copyText(
-completeScript,
+originalStory,
 document.getElementById('scriptStatus'),
-"✅ Complete six-scene script copied!"
+"✅ Complete story copied!"
 );
 
 }
