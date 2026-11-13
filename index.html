@@ -4,272 +4,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10111b">
 <title>Roblox AI Shorts Studio</title>
-
 <style>
 *{box-sizing:border-box}
-
-body{
-margin:0;
-background:#10111b;
-color:white;
-font-family:Arial,sans-serif;
-}
-
-header{
-padding:22px;
-background:#191a29;
-border-bottom:1px solid #303044;
-}
-
-h1{
-font-size:23px;
-margin:0;
-color:#a78bfa;
-}
-
-header p{color:#aaa;font-size:13px}
-
-main{
-padding:18px;
-max-width:850px;
-margin:auto;
-}
-
-.card{
-background:#1c1d2d;
-padding:18px;
-border-radius:14px;
-margin:14px 0;
-border:1px solid #303044;
-}
-
+body{margin:0;background:#10111b;color:#fff;font-family:Arial,sans-serif}
+header{padding:22px;background:#191a29;border-bottom:1px solid #303044}
+h1{font-size:23px;margin:0;color:#a78bfa}
+header p{color:#aaa;font-size:13px;margin-bottom:0}
+main{padding:18px;max-width:900px;margin:auto}
+.card{background:#1c1d2d;padding:18px;border-radius:14px;margin:14px 0;border:1px solid #303044}
 h2{font-size:17px;margin-top:0}
-
-.stat{
-font-size:27px;
-color:#a78bfa;
-font-weight:bold;
-}
-
-button{
-background:#8057ed;
-color:white;
-border:0;
-padding:12px 16px;
-border-radius:9px;
-font-weight:bold;
-margin:5px 4px 5px 0;
-cursor:pointer;
-}
-
+h3{color:#c4b5fd;font-size:16px;margin-top:0}
+.stat{font-size:27px;color:#a78bfa;font-weight:bold}
+button{background:#8057ed;color:white;border:0;padding:12px 16px;border-radius:9px;font-weight:bold;margin:5px 4px 5px 0;cursor:pointer}
+button.secondary{background:#34354d}
+button.danger{background:#873c54}
 button:active{opacity:.8}
-
-input,textarea{
-width:100%;
-padding:12px;
-background:#11121d;
-color:white;
-border:1px solid #444;
-border-radius:8px;
-margin:10px 0;
-font-family:Arial,sans-serif;
-}
-
-textarea{
-min-height:190px;
-resize:vertical;
-line-height:1.5;
-}
-
-.small{
-color:#aaa;
-font-size:13px;
-}
-
-#result,.scene-content{
-white-space:pre-wrap;
-line-height:1.6;
-overflow-wrap:anywhere;
-background:#11121d;
-padding:14px;
-border-radius:9px;
-}
-
-.scene-card{
-background:#24253a;
-border:1px solid #44415f;
-border-radius:12px;
-padding:14px;
-margin:12px 0;
-}
-
-.scene-card h3{
-color:#c4b5fd;
-font-size:16px;
-margin-top:0;
-}
-
-.status{
-color:#a78bfa;
-font-size:13px;
-}
-
-footer{
-text-align:center;
-color:#888;
-font-size:12px;
-padding:20px;
-}
+input,textarea,select{width:100%;padding:12px;background:#11121d;color:white;border:1px solid #444;border-radius:8px;margin:10px 0;font-family:Arial,sans-serif}
+textarea{min-height:190px;resize:vertical;line-height:1.5}
+.small{color:#aaa;font-size:13px;line-height:1.5}
+.status{color:#a78bfa;font-size:13px;min-height:18px}
+#result,.scene-content,.prompt-content{white-space:pre-wrap;line-height:1.6;overflow-wrap:anywhere;background:#11121d;padding:14px;border-radius:9px}
+.scene-card,.prompt-card{background:#24253a;border:1px solid #44415f;border-radius:12px;padding:14px;margin:12px 0}
+.scene-card h3,.prompt-card h3{margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field-label{display:block;color:#c9c4df;font-size:13px;margin-top:8px}
+footer{text-align:center;color:#888;font-size:12px;padding:20px}
+hr{border:0;border-top:1px solid #38384e;margin:18px 0}
+@media(max-width:600px){main{padding:10px}.card{padding:14px}.grid{grid-template-columns:1fr}button{max-width:100%}}
 </style>
 </head>
-
 <body>
-
 <header>
 <h1>🎬 Roblox AI Shorts Studio</h1>
 <p>Your personal YouTube Shorts control centre</p>
 </header>
-
 <main>
 
 <div class="card">
 <h2>📊 Dashboard</h2>
-
-<p>Ideas generated</p>
-<div class="stat" id="ideasCount">0</div>
-
-<p>Videos created</p>
-<div class="stat">0</div>
-
-<p>Videos awaiting approval</p>
-<div class="stat">0</div>
+<div class="grid">
+<div><p class="small">Ideas generated</p><div class="stat" id="ideasCount">0</div></div>
+<div><p class="small">Scenes organized</p><div class="stat" id="scenesCount">0 / 6</div></div>
+</div>
+<p class="small" id="saveStatus">Your work is saved automatically on this device.</p>
 </div>
 
 <div class="card">
 <h2>💡 Roblox Story Idea Generator</h2>
-
-<p class="small">
-Enter a topic to create an original Roblox Shorts story prompt.
-</p>
-
-<input id="topic"
-placeholder="Example: A noob becomes the richest Roblox player">
-
-<button onclick="generate()">🚀 Generate Story</button>
-<button onclick="copyPrompt()">📋 Copy Story Prompt</button>
-
-<p id="copyStatus" class="small"></p>
-
-<p id="result" class="small">
-Your story prompt will appear here.
-</p>
+<p class="small">Enter a topic to create a detailed prompt for an original Roblox Shorts story. This creates a prompt for an AI writer; it does not generate the finished story itself.</p>
+<input id="topic" placeholder="Example: A noob becomes the richest Roblox player">
+<button onclick="generate()">🚀 Generate Story Prompt</button>
+<button class="secondary" onclick="copyPrompt()">📋 Copy Story Prompt</button>
+<button class="secondary" onclick="downloadText(lastPrompt,'roblox-story-generation-prompt.txt')">⬇️ Download Prompt</button>
+<p id="copyStatus" class="status"></p>
+<div id="result" class="small">Your story-generation prompt will appear here.</div>
 </div>
 
-<!-- SCRIPT STUDIO -->
-
 <div class="card">
-
 <h2>🎬 Roblox Script Studio</h2>
-
-<p class="small">
-Paste your complete ChatGPT-generated story.
-The studio finds the six scenes and organizes them separately.
-</p>
-
-<textarea
-id="storyInput"
-placeholder="Paste your complete Roblox story here..."
-></textarea>
-
-<button onclick="organizeStory()">
-🎬 Organize Into Scenes
-</button>
-
-<button onclick="copyEntireScript()">
-📋 Copy Entire Script
-</button>
-
+<p class="small">Paste your complete story below. Include six headings such as SCENE 1 through SCENE 6. The organizer checks that each scene appears exactly once.</p>
+<textarea id="storyInput" placeholder="Paste your complete Roblox story here..."></textarea>
+<button onclick="organizeStory()">🎬 Organize Into Scenes</button>
+<button class="secondary" onclick="copyEntireScript()">📋 Copy Entire Script</button>
+<button class="secondary" onclick="downloadStory()">⬇️ Download Complete Story</button>
 <p id="scriptStatus" class="status"></p>
-
 <div id="scriptOutput"></div>
-
 </div>
 
 <div class="card">
-<h2>🎥 Video Production</h2>
-<p class="small">
-No videos created yet. Actual AI video generation is not connected.
-</p>
+<h2>✨ AI Video Prompt Enhancer</h2>
+<p class="small">Creates detailed, consistent video prompts from your six organized scenes. This is a local prompt formatter, not a connected AI model or video generator. Review and edit the prompts before using them in a video tool.</p>
+<label class="field-label" for="characterGuide">Character appearance and continuity guide</label>
+<textarea id="characterGuide" style="min-height:110px">NOOBY: classic Roblox noob with a bright yellow block-shaped head, expressive simple face, blue shirt/torso, and green pants.
+BACON: Roblox character with recognizable brown bacon-style layered hair. Keep the same hair, outfit, body proportions, and accessories in every scene.
+CONTINUITY: Keep each character's design, colors, proportions, and accessories identical across all six scenes. Do not redesign or duplicate characters.</textarea>
+<div class="grid">
+<div>
+<label class="field-label" for="visualStyle">Visual style</label>
+<select id="visualStyle">
+<option>Polished classic Roblox 3D animation</option>
+<option>Bright colorful cinematic Roblox animation</option>
+<option>Funny exaggerated cartoon Roblox animation</option>
+<option>Cinematic dramatic Roblox lighting</option>
+</select>
+</div>
+<div>
+<label class="field-label" for="aspectRatio">Aspect ratio</label>
+<select id="aspectRatio">
+<option value="9:16">Vertical 9:16 (YouTube Shorts)</option>
+<option value="16:9">Horizontal 16:9</option>
+<option value="1:1">Square 1:1</option>
+</select>
+</div>
+</div>
+<button onclick="enhanceAll()">✨ Enhance All 6 Scene Prompts</button>
+<button class="secondary" onclick="copyAllEnhanced()">📋 Copy All Enhanced Prompts</button>
+<button class="secondary" onclick="downloadAllEnhanced()">⬇️ Download All Enhanced Prompts</button>
+<p id="enhanceStatus" class="status"></p>
+<div id="enhancedOutput"></div>
 </div>
 
 <div class="card">
-<h2>✅ Approval Centre</h2>
-<p class="small">
-Your finished videos will appear here for approval before uploading.
-</p>
+<h2>🎥 Video Production Checklist</h2>
+<p class="small">Use this checklist while creating and editing your six clips. Checkboxes are saved on this device.</p>
+<div id="checklist">
+<label class="field-label"><input type="checkbox" data-check="clip1" style="width:auto"> Scene 1 video clip created</label>
+<label class="field-label"><input type="checkbox" data-check="clip2" style="width:auto"> Scene 2 video clip created</label>
+<label class="field-label"><input type="checkbox" data-check="clip3" style="width:auto"> Scene 3 video clip created</label>
+<label class="field-label"><input type="checkbox" data-check="clip4" style="width:auto"> Scene 4 video clip created</label>
+<label class="field-label"><input type="checkbox" data-check="clip5" style="width:auto"> Scene 5 video clip created</label>
+<label class="field-label"><input type="checkbox" data-check="clip6" style="width:auto"> Scene 6 video clip created</label>
+<label class="field-label"><input type="checkbox" data-check="watermark" style="width:auto"> Checked clips for unwanted watermarks</label>
+<label class="field-label"><input type="checkbox" data-check="voice" style="width:auto"> Added voice-over / character voices</label>
+<label class="field-label"><input type="checkbox" data-check="captions" style="width:auto"> Added and checked subtitles/captions</label>
+<label class="field-label"><input type="checkbox" data-check="audio" style="width:auto"> Added music and sound effects</label>
+<label class="field-label"><input type="checkbox" data-check="export" style="width:auto"> Exported and reviewed final 1080 × 1920 video</label>
+</div>
 </div>
 
 <div class="card">
-<h2>📺 YouTube Uploads</h2>
-<p class="small">
-YouTube is not connected yet. No videos will be uploaded automatically.
-</p>
+<h2>📌 Production, Approval & YouTube</h2>
+<p class="small">Create the six clips in your chosen video tool, then merge them in a video editor. Add voice-over, captions, music, sound effects, and transitions. Export at 1080 × 1920 for vertical Shorts. Check the export for watermarks and licensing restrictions yourself.</p>
+<p class="small">AI video generation, approval workflows, and YouTube uploading are not connected in this website. Nothing is uploaded automatically.</p>
 </div>
 
+<div class="card">
+<h2>🧹 Project Data</h2>
+<p class="small">Your saved project data stays in this browser on this device. Clearing browser data or using another device may remove or hide it. Download backups before clearing it.</p>
+<button class="secondary" onclick="downloadBackup()">⬇️ Download Project Backup</button>
+<button class="danger" onclick="clearProject()">Clear Saved Project</button>
+</div>
 </main>
-
-<footer>
-Roblox AI Shorts Studio | Built for original Roblox entertainment
-</footer>
+<footer>Roblox AI Shorts Studio | Built for original Roblox entertainment</footer>
 
 <script>
+const STORAGE_KEY = "robloxAiShortsStudio_v2";
+let ideasGenerated = 0, lastPrompt = "", organizedScenes = [], originalStory = "", enhancedPrompts = [];
 
-let ideasGenerated = 0;
-let lastPrompt = "";
-let organizedScenes = [];
-let originalStory = "";
+const $ = id => document.getElementById(id);
 
-/* STORY IDEA GENERATOR */
-
-function generate(){
-
-const topic =
-document.getElementById('topic').value.trim();
-
-if(!topic){
-alert('Enter a Roblox story topic first!');
-return;
+function saveProject(){
+  try{
+    const checks = {};
+    document.querySelectorAll("[data-check]").forEach(el => checks[el.dataset.check] = el.checked);
+    const data = {
+      topic:$("topic").value,
+      storyInput:$("storyInput").value,
+      characterGuide:$("characterGuide").value,
+      visualStyle:$("visualStyle").value,
+      aspectRatio:$("aspectRatio").value,
+      ideasGenerated,lastPrompt,originalStory,organizedScenes,enhancedPrompts,checks
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    $("saveStatus").textContent = "✅ Saved automatically on this device.";
+  }catch(e){
+    $("saveStatus").textContent = "⚠️ Browser storage is unavailable. Download a project backup.";
+  }
 }
 
-const hooks = [
-"Nobody believed this noob... until something unbelievable happened!",
-"Everyone laughed at him, but they were about to regret it!",
-"He thought it was an ordinary Roblox day. He was completely wrong!",
-"What happened next shocked the entire server!"
-];
+function restoreProject(){
+  try{
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if(!data) return;
+    $("topic").value = data.topic || "";
+    $("storyInput").value = data.storyInput || "";
+    $("characterGuide").value = data.characterGuide || $("characterGuide").value;
+    $("visualStyle").value = data.visualStyle || $("visualStyle").value;
+    $("aspectRatio").value = data.aspectRatio || "9:16";
+    ideasGenerated = Number(data.ideasGenerated || 0);
+    lastPrompt = data.lastPrompt || "";
+    originalStory = data.originalStory || "";
+    organizedScenes = Array.isArray(data.organizedScenes) ? data.organizedScenes : [];
+    enhancedPrompts = Array.isArray(data.enhancedPrompts) ? data.enhancedPrompts : [];
+    $("ideasCount").textContent = ideasGenerated;
+    if(lastPrompt) $("result").textContent = lastPrompt;
+    if(organizedScenes.length) renderScenes();
+    if(enhancedPrompts.length) renderEnhanced();
+    Object.entries(data.checks || {}).forEach(([key,val]) => {
+      const el = document.querySelector('[data-check="'+key+'"]');
+      if(el) el.checked = !!val;
+    });
+    if(data.originalStory) $("scriptStatus").textContent = "Restored your previously organized story.";
+  }catch(e){
+    console.warn("Could not restore saved project",e);
+  }
+}
 
-const characters = [
-"A funny noob who dreams big",
-"A rich and arrogant Roblox player",
-"A mysterious stranger with a secret",
-"A best friend who always causes trouble"
-];
-
-const endings = [
-"The poorest player secretly owns the entire game!",
-"The villain turns out to be his best friend!",
-"The noob becomes the richest player overnight!",
-"Everyone discovers that the entire adventure was a prank!"
-];
+document.addEventListener("input", e => {
+  if(e.target.matches("input,textarea,select")) saveProject();
+});
+document.addEventListener("change", e => {
+  if(e.target.matches("input,textarea,select")) saveProject();
+});
 
 function pick(arr){
-return arr[Math.floor(Math.random()*arr.length)];
+  return arr[Math.floor(Math.random()*arr.length)];
 }
 
-lastPrompt = `
-ROBLOX AI SHORTS STUDIO
-ORIGINAL STORY GENERATION PROMPT
+function generate(){
+  const topic = $("topic").value.trim();
+  if(!topic){
+    alert("Enter a Roblox story topic first!");
+    return;
+  }
+
+  const hooks = [
+    "Nobody believed this noob... until something unbelievable happened!",
+    "Everyone laughed at him, but they were about to regret it!",
+    "He thought it was an ordinary Roblox day. He was completely wrong!",
+    "What happened next shocked the entire server!"
+  ];
+
+  const characters = [
+    "A funny noob who dreams big",
+    "A rich and arrogant Roblox player",
+    "A mysterious stranger with a secret",
+    "A best friend who always causes trouble"
+  ];
+
+  const endings = [
+    "The poorest player secretly owns the entire game!",
+    "The villain turns out to be his best friend!",
+    "The noob becomes the richest player overnight!",
+    "Everyone discovers that the entire adventure was a prank!"
+  ];
+
+  lastPrompt = `ROBLOX AI SHORTS STUDIO — ORIGINAL STORY GENERATION PROMPT
 
 STORY TOPIC:
 ${topic}
@@ -277,324 +239,416 @@ ${topic}
 OPENING HOOK:
 ${pick(hooks)}
 
-MAIN CHARACTER:
+MAIN CHARACTER IDEA:
 ${pick(characters)}
 
-UNEXPECTED ENDING:
+POSSIBLE UNEXPECTED ENDING:
 ${pick(endings)}
 
 YOUR TASK:
+Create a funny, original, entertaining Roblox YouTube Short lasting 30–60 seconds.
 
-Create a funny, original and entertaining Roblox YouTube Short.
-
-1. STORY TITLE
-Create an interesting and clickable title.
-
-2. OPENING HOOK
-Write an attention-grabbing opening for the first 3 seconds.
-
-3. CHARACTERS
-Introduce the main characters and their personalities.
-
-4. SIX-SCENE STORY
-
-SCENE 1: Introduce the situation.
+OUTPUT EXACTLY SIX SCENES:
+SCENE 1: Introduce the situation and grab attention.
 SCENE 2: Introduce the main problem.
-SCENE 3: Make the situation funny.
+SCENE 3: Make the situation funny and raise the stakes.
 SCENE 4: Create an unexpected twist.
-SCENE 5: Build suspense.
-SCENE 6: Reveal the unexpected ending.
+SCENE 5: Build suspense toward the reveal.
+SCENE 6: Reveal the unexpected ending with a memorable final beat.
 
-5. CHARACTER DIALOGUES
-Write natural and funny conversations.
+FOR EACH SCENE INCLUDE:
+- Scene number and approximate timing.
+- Narrator dialogue.
+- Character dialogue.
+- Character actions and expressions.
+- AI VIDEO PROMPT: a detailed visual prompt for generating that scene.
 
-6. AI VIDEO GENERATION PROMPTS
-Write detailed visual prompts for each scene.
+CHARACTER CONSISTENCY:
+Keep every character's appearance, clothing, hair, colors, body proportions, and accessories consistent across all six scenes. If a character returns, describe them consistently.
 
-Include:
-- Roblox-style 3D visuals.
-- Character appearance.
-- Character movements.
-- Camera angles.
-- Background environment.
-- Facial expressions.
-- Vertical 9:16 composition.
+VIDEO PROMPTS:
+Include Roblox-style 3D visuals, environment/background, character appearance and movement, facial expressions, camera framing and movement, lighting, animation style, and vertical 9:16 composition. Avoid text, subtitles, logos, and watermarks in generated visuals.
 
-7. AUDIO
-Suggest suitable background music and sound effects.
+ALSO INCLUDE:
+- Suitable background music and sound effects.
+- A clickable thumbnail concept.
+- YouTube title, description, and relevant hashtags.
 
-8. THUMBNAIL
-Suggest a clickable thumbnail.
+IMPORTANT:
+Make the story original, fast-paced, easy to follow, and suitable for YouTube Shorts. Do not add a seventh scene.`;
 
-9. YOUTUBE UPLOAD DETAILS
-Suggest a title, description and hashtags.
-
-IMPORTANT RULES:
-- Make the story original.
-- Keep viewers interested.
-- Avoid repetitive storylines.
-- Make it suitable for YouTube Shorts.
-- Target 30-60 seconds.
-
-OUTPUT:
-Provide the complete story in an easy-to-follow format.
-`;
-
-ideasGenerated++;
-
-document.getElementById('ideasCount').textContent =
-ideasGenerated;
-
-document.getElementById('result').textContent =
-lastPrompt;
-
-document.getElementById('copyStatus').textContent = "";
-
+  ideasGenerated++;
+  $("ideasCount").textContent = ideasGenerated;
+  $("result").textContent = lastPrompt;
+  $("copyStatus").textContent = "";
+  saveProject();
 }
 
-/* COPY HELPER */
-
-async function copyText(text,statusElement,successMessage){
-
-try{
-
-if(navigator.clipboard && window.isSecureContext){
-
-await navigator.clipboard.writeText(text);
-
-statusElement.textContent = successMessage;
-return;
-
+async function copyText(text,statusEl,message){
+  if(!text){
+    statusEl.textContent = "Nothing to copy yet.";
+    return;
+  }
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+    }else{
+      const temp=document.createElement("textarea");
+      temp.value=text;
+      temp.style.position="fixed";
+      temp.style.opacity="0";
+      document.body.appendChild(temp);
+      temp.select();
+      const ok=document.execCommand("copy");
+      temp.remove();
+      if(!ok) throw new Error("Copy unavailable");
+    }
+    statusEl.textContent=message;
+  }catch(e){
+    statusEl.textContent="Copy was blocked by your browser. Select the text and copy it manually.";
+  }
 }
 
-const temp = document.createElement('textarea');
-
-temp.value = text;
-temp.style.position = 'fixed';
-temp.style.opacity = '0';
-
-document.body.appendChild(temp);
-temp.select();
-
-const copied = document.execCommand('copy');
-
-document.body.removeChild(temp);
-
-statusElement.textContent = copied
-? successMessage
-: "Copy failed. Please select and copy manually.";
-
-}catch(error){
-
-statusElement.textContent =
-"Copy failed. Please select and copy manually.";
-
+function copyPrompt(){
+  if(!lastPrompt){
+    alert("Generate a story prompt first!");
+    return;
+  }
+  copyText(lastPrompt,$("copyStatus"),"✅ Story prompt copied!");
 }
 
+function downloadText(text,filename){
+  if(!text){
+    alert("There is no content to download yet.");
+    return;
+  }
+  const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
-/* COPY PROMPT */
-
-async function copyPrompt(){
-
-if(!lastPrompt){
-alert('Generate a story prompt first!');
-return;
+function downloadStory(){
+  if(!originalStory){
+    $("scriptStatus").textContent="Organize your story first.";
+    return;
+  }
+  downloadText(originalStory,"roblox-short-complete-story.txt");
+  $("scriptStatus").textContent="✅ Story download started.";
 }
 
-await copyText(
-lastPrompt,
-document.getElementById('copyStatus'),
-'✅ Story prompt copied!'
-);
-
+function clearSceneOutput(){
+  $("scriptOutput").replaceChildren();
+  $("enhancedOutput").replaceChildren();
 }
-
-/* ROBLOX SCRIPT STUDIO */
 
 function organizeStory(){
+  const story=$("storyInput").value.trim();
+  const output=$("scriptOutput");
+  const status=$("scriptStatus");
 
-const story =
-document.getElementById('storyInput').value.trim();
+  if(!story){
+    status.textContent="⚠️ Paste your story first!";
+    organizedScenes=[];
+    originalStory="";
+    enhancedPrompts=[];
+    clearSceneOutput();
+    saveProject();
+    return;
+  }
 
-const output =
-document.getElementById('scriptOutput');
+  const sectionRegex=/^\s*(?:#{1,6}\s*)?(?:\*\*)?(?:\d+\.\s*)?(?:SIX[-\s–—]*SCENE STORY|6[-\s–—]*SCENE STORY)\b.*$/im;
+  const sectionMatch=sectionRegex.exec(story);
+  let sectionStart=sectionMatch ? sectionMatch.index+sectionMatch[0].length : 0;
+  let remaining=story.slice(sectionStart);
 
-const status =
-document.getElementById('scriptStatus');
+  if(sectionMatch){
+    const nextHeading=/^\s*(?:#{1,6}\s*)?(?:\*\*)?\d+\.\s*(?:CHARACTER DIALOGUES|AI VIDEO|BACKGROUND MUSIC|VIDEO EDITING|EDITING SETTINGS)\b/im;
+    const next=nextHeading.exec(remaining);
+    if(next) remaining=remaining.slice(0,next.index);
+  }
 
-if(!story){
+  const headingRegex=/^\s*(?:#{1,6}\s*)?(?:\*\*)?SCENE\s*([1-6])\s*(?:[-–—:.)]|\b)(?:\s*[-–—:.)]?\s*)\S.*?(?:\*\*)?\s*$/gim;
+  const matches=[...remaining.matchAll(headingRegex)];
 
-status.textContent = "⚠️ Paste your story first!";
-output.replaceChildren();
-organizedScenes = [];
-originalStory = "";
-return;
+  if(matches.length!==6){
+    status.textContent="⚠️ Found "+matches.length+" scene headings. Please include SCENE 1 through SCENE 6 exactly once.";
+    organizedScenes=[];
+    originalStory="";
+    enhancedPrompts=[];
+    clearSceneOutput();
+    $("scenesCount").textContent="0 / 6";
+    saveProject();
+    return;
+  }
 
+  const scenes=matches.map((m,i)=>({
+    number:Number(m[1]),
+    content:remaining.slice(m.index,i+1<matches.length?matches[i+1].index:remaining.length).trim()
+  }));
+
+  const nums=scenes.map(s=>s.number);
+  if(new Set(nums).size!==6 || ![1,2,3,4,5,6].every(n=>nums.includes(n))){
+    status.textContent="⚠️ Please include each scene from 1 to 6 exactly once.";
+    organizedScenes=[];
+    originalStory="";
+    enhancedPrompts=[];
+    clearSceneOutput();
+    $("scenesCount").textContent="0 / 6";
+    saveProject();
+    return;
+  }
+
+  organizedScenes=scenes.sort((a,b)=>a.number-b.number);
+  originalStory=story;
+  enhancedPrompts=[];
+  renderScenes();
+  $("enhancedOutput").replaceChildren();
+  $("scenesCount").textContent="6 / 6";
+  status.textContent="✅ Success! All six scenes organized correctly. You can now enhance their video prompts.";
+  saveProject();
 }
 
-/* Find the SIX-SCENE STORY section only */
+function renderScenes(){
+  const output=$("scriptOutput");
+  output.replaceChildren();
 
-const sectionRegex =
-/^\s*(?:#{1,6}\s*)?(?:\*\*)?3\.\s*SIX[-\s–—]*SCENE STORY\b.*$/im;
+  organizedScenes.forEach(scene=>{
+    const card=document.createElement("div");
+    card.className="scene-card";
 
-const sectionMatch = sectionRegex.exec(story);
+    const h=document.createElement("h3");
+    h.textContent="🎬 Scene "+scene.number;
 
-if(!sectionMatch){
+    const content=document.createElement("div");
+    content.className="scene-content";
+    content.textContent=scene.content;
 
-status.textContent =
-"⚠️ Could not find section 3. SIX-SCENE STORY.";
+    const btn=document.createElement("button");
+    btn.textContent="📋 Copy Scene "+scene.number;
+    btn.onclick=()=>copyText(scene.content,$("scriptStatus"),"✅ Scene "+scene.number+" copied!");
 
-output.replaceChildren();
-organizedScenes = [];
-originalStory = "";
-return;
-
+    card.append(h,content,btn);
+    output.appendChild(card);
+  });
 }
 
-const sectionStart =
-sectionMatch.index + sectionMatch[0].length;
-
-const remainingStory =
-story.slice(sectionStart);
-
-/* Stop before section 4 */
-
-const nextSectionRegex =
-/^\s*(?:#{1,6}\s*)?(?:\*\*)?4\.\s*(?:BACKGROUND MUSIC|VIDEO EDITING|EDITING SETTINGS)\b/im;
-
-const nextSectionMatch =
-nextSectionRegex.exec(remainingStory);
-
-const storySection = nextSectionMatch
-? remainingStory.slice(0,nextSectionMatch.index)
-: remainingStory;
-
-/* Match only actual scene headings */
-
-const headingRegex =
-/^\s*(?:#{1,6}\s*)?(?:\*\*)?SCENE\s*([1-6])\s*(?:[-–—:.)]|\b)(?:\s*[-–—:.)]?\s*)\S.*?(?:\*\*)?\s*$/gim;
-
-const matches = [...storySection.matchAll(headingRegex)];
-
-if(matches.length !== 6){
-
-status.textContent =
-"⚠️ Found " + matches.length +
-" headings inside the story section. Expected exactly six.";
-
-output.replaceChildren();
-organizedScenes = [];
-originalStory = "";
-return;
-
+function copyEntireScript(){
+  if(!originalStory){
+    $("scriptStatus").textContent="⚠️ Organize your story first!";
+    return;
+  }
+  copyText(originalStory,$("scriptStatus"),"✅ Complete story copied!");
 }
 
-/* Build scene content */
+function extractVisualPrompt(sceneText){
+  const lines=sceneText.split(/\r?\n/);
+  const start=lines.findIndex(line=>/AI\s+VIDEO\s+PROMPT\s*:/i.test(line));
 
-const scenes = matches.map((match,index)=>{
+  if(start<0){
+    return sceneText.replace(/^SCENE\s*[1-6][^\n]*\n?/i,"").trim();
+  }
 
-const start = match.index;
+  const first=lines[start].replace(/^.*?AI\s+VIDEO\s+PROMPT\s*:\s*/i,"").trim();
+  const collected=[];
+  if(first) collected.push(first);
 
-const end = index + 1 < matches.length
-? matches[index+1].index
-: storySection.length;
+  for(let i=start+1;i<lines.length;i++){
+    if(/^\s*(?:NARRATOR|CHARACTER\s+DIALOGUE|DIALOGUE|AUDIO|SOUND\s+EFFECTS?|MUSIC|THUMBNAIL|YOUTUBE|SCENE\s*[1-6]\b)\s*:/i.test(lines[i])) break;
+    collected.push(lines[i]);
+  }
 
-return {
-number:Number(match[1]),
-content:storySection.slice(start,end).trim()
-};
-
-});
-
-/* Validate scene numbers */
-
-const numbers = scenes.map(scene=>scene.number);
-
-if(
-new Set(numbers).size !== 6 ||
-![1,2,3,4,5,6].every(n=>numbers.includes(n))
-){
-
-status.textContent =
-"⚠️ Please include each scene from 1 to 6 exactly once.";
-
-output.replaceChildren();
-organizedScenes = [];
-originalStory = "";
-return;
-
+  return collected.join("\n").trim() || sceneText;
 }
 
-scenes.sort((a,b)=>a.number-b.number);
+function buildEnhancedPrompt(scene){
+  const visual=extractVisualPrompt(scene.content);
+  const guide=$("characterGuide").value.trim();
+  const style=$("visualStyle").value;
+  const ratio=$("aspectRatio").value;
+  const timing=(scene.content.match(/\b\d{1,2}\s*(?:-|–|to)\s*\d{1,2}\s*(?:sec|seconds?)\b/i)||[])[0] || "Use a short, clear shot appropriate to a 30–60 second short";
 
-organizedScenes = scenes;
-originalStory = story;
+  return `SCENE ${scene.number} — ENHANCED AI VIDEO PROMPT
 
-output.replaceChildren();
+SOURCE SCENE:
+${visual}
 
-/* Display six scene cards */
+CHARACTER APPEARANCE AND CONTINUITY:
+${guide || "Keep all recurring Roblox characters visually identical across scenes."}
 
-scenes.forEach(scene=>{
+ENVIRONMENT AND BACKGROUND:
+Create a clear Roblox game environment that matches the action and story context. Keep the location coherent and avoid unrelated background changes.
 
-const card = document.createElement('div');
-card.className = 'scene-card';
+ACTION AND EXPRESSIONS:
+Show the characters performing the actions described in the source scene. Use readable, expressive Roblox-style body language and facial expressions. Make the action easy to understand at a glance. Avoid confusing or unnecessary movements.
 
-const heading = document.createElement('h3');
-heading.textContent = '🎬 Scene ' + scene.number;
+CAMERA:
+Use dynamic but smooth cinematic camera framing. Choose suitable close-ups, medium shots, wide shots, and camera movement to emphasize the important action. Keep the main characters clearly visible.
 
-const content = document.createElement('div');
-content.className = 'scene-content';
-content.textContent = scene.content;
+TIMING:
+${timing}
 
-const button = document.createElement('button');
-button.textContent = '📋 Copy Scene ' + scene.number;
+LIGHTING AND ANIMATION:
+${style}. Use polished Roblox-style 3D animation, smooth character movement, expressive poses, consistent proportions, and clear visual storytelling.
 
-button.addEventListener('click',async()=>{
+VIDEO FORMAT:
+${ratio} aspect ratio. Compose the scene for the selected format. Keep important characters and actions inside the frame.
 
-await copyText(
-scene.content,
-status,
-'✅ Scene ' + scene.number + ' copied!'
-);
-
-});
-
-card.appendChild(heading);
-card.appendChild(content);
-card.appendChild(button);
-
-output.appendChild(card);
-
-});
-
-status.textContent =
-"✅ Success! All six scenes organized correctly.";
-
+NEGATIVE PROMPT:
+No character redesigns, no changing outfits, no inconsistent hair, no extra limbs, no distorted faces, no duplicated characters, no blurry characters, no random objects, no unwanted text, no subtitles, no logos, and no watermarks.`;
 }
 
-/* COPY COMPLETE ORIGINAL STORY */
+function enhanceAll(){
+  const status=$("enhanceStatus");
 
-async function copyEntireScript(){
+  if(organizedScenes.length!==6){
+    status.textContent="⚠️ First paste your story and organize all six scenes.";
+    return;
+  }
 
-if(!originalStory){
+  enhancedPrompts=organizedScenes.map(scene=>({
+    number:scene.number,
+    prompt:buildEnhancedPrompt(scene)
+  }));
 
-document.getElementById('scriptStatus').textContent =
-"⚠️ Organize your story first!";
-
-return;
-
+  renderEnhanced();
+  status.textContent="✅ Successfully enhanced all six scene prompts!";
+  saveProject();
 }
 
-await copyText(
-originalStory,
-document.getElementById('scriptStatus'),
-"✅ Complete story copied!"
-);
+function renderEnhanced(){
+  const output=$("enhancedOutput");
+  output.replaceChildren();
 
+  enhancedPrompts.forEach(item=>{
+    const card=document.createElement("div");
+    card.className="prompt-card";
+
+    const heading=document.createElement("h3");
+    heading.textContent="✨ Enhanced Scene "+item.number;
+
+    const content=document.createElement("div");
+    content.className="prompt-content";
+    content.textContent=item.prompt;
+
+    const button=document.createElement("button");
+    button.textContent="📋 Copy Enhanced Scene "+item.number;
+    button.onclick=()=>{
+      copyText(
+        item.prompt,
+        $("enhanceStatus"),
+        "✅ Enhanced Scene "+item.number+" copied!"
+      );
+    };
+
+    card.append(heading,content,button);
+    output.appendChild(card);
+  });
 }
 
+function copyAllEnhanced(){
+  if(!enhancedPrompts.length){
+    $("enhanceStatus").textContent="⚠️ Enhance all six scenes first.";
+    return;
+  }
+
+  const all=enhancedPrompts
+    .map(item=>item.prompt)
+    .join("\n\n========================================\n\n");
+
+  copyText(
+    all,
+    $("enhanceStatus"),
+    "✅ All six enhanced prompts copied!"
+  );
+}
+
+function downloadAllEnhanced(){
+  if(!enhancedPrompts.length){
+    $("enhanceStatus").textContent="⚠️ Enhance all six scenes first.";
+    return;
+  }
+
+  const all=enhancedPrompts
+    .map(item=>item.prompt)
+    .join("\n\n========================================\n\n");
+
+  downloadText(all,"roblox-all-six-enhanced-video-prompts.txt");
+  $("enhanceStatus").textContent="✅ Enhanced prompts download started.";
+}
+
+function downloadBackup(){
+  const checks={};
+
+  document.querySelectorAll("[data-check]").forEach(el=>{
+    checks[el.dataset.check]=el.checked;
+  });
+
+  const backup={
+    topic:$("topic").value,
+    storyInput:$("storyInput").value,
+    characterGuide:$("characterGuide").value,
+    visualStyle:$("visualStyle").value,
+    aspectRatio:$("aspectRatio").value,
+    ideasGenerated,
+    lastPrompt,
+    originalStory,
+    organizedScenes,
+    enhancedPrompts,
+    checks,
+    backupCreated:new Date().toISOString()
+  };
+
+  downloadText(
+    JSON.stringify(backup,null,2),
+    "roblox-shorts-studio-project-backup.json"
+  );
+
+  $("saveStatus").textContent="✅ Project backup download started.";
+}
+
+function clearProject(){
+  const confirmed=confirm(
+    "Are you sure you want to clear your saved project? Download a backup first if you want to keep your work."
+  );
+
+  if(!confirmed) return;
+
+  localStorage.removeItem(STORAGE_KEY);
+
+  ideasGenerated=0;
+  lastPrompt="";
+  organizedScenes=[];
+  originalStory="";
+  enhancedPrompts=[];
+
+  $("topic").value="";
+  $("storyInput").value="";
+  $("ideasCount").textContent="0";
+  $("scenesCount").textContent="0 / 6";
+  $("result").textContent="Your story-generation prompt will appear here.";
+  $("scriptStatus").textContent="";
+  $("enhanceStatus").textContent="";
+  $("copyStatus").textContent="";
+
+  $("scriptOutput").replaceChildren();
+  $("enhancedOutput").replaceChildren();
+
+  document.querySelectorAll("[data-check]").forEach(el=>{
+    el.checked=false;
+  });
+
+  $("saveStatus").textContent="Project cleared. Your new work will save automatically.";
+
+  saveProject();
+}
+
+restoreProject();
 </script>
-
 </body>
 </html>
