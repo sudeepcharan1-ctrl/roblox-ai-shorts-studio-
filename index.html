@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roblox AI Shorts Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#10111b;color:white;font-family:Arial,sans-serif}
+header{padding:22px;background:#191a29;border-bottom:1px solid #303044}
+h1{font-size:23px;margin:0;color:#a78bfa}
+header p{color:#aaa;font-size:13px}
+main{padding:18px;max-width:850px;margin:auto}
+.card{background:#1c1d2d;padding:18px;border-radius:14px;margin:14px 0;border:1px solid #303044}
+h2{font-size:17px;margin-top:0}
+.stat{font-size:27px;color:#a78bfa;font-weight:bold}
+button{background:#8057ed;color:white;border:0;padding:12px 16px;border-radius:9px;font-weight:bold}
+input{width:100%;padding:12px;background:#11121d;color:white;border:1px solid #444;border-radius:8px;margin:10px 0}
+.small{color:#aaa;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h1>🎬 Roblox AI Shorts Studio</h1>
+<p>Your personal YouTube Shorts control centre</p>
+</header>
+<main>
+<div class="card">
+<h2>📊 Dashboard</h2>
+<p>Ideas generated</p><div class="stat">0</div>
+<p>Videos created</p><div class="stat">0</div>
+<p>Videos awaiting approval</p><div class="stat">0</div>
+</div>
+<div class="card">
+<h2>💡 Story Idea Generator</h2>
+<input id="topic" placeholder="Enter a Roblox story topic">
+<button onclick="generate()">Generate idea</button>
+<p id="result" class="small">Your story idea will appear here.</p>
+</div>
+<div class="card">
+<h2>🎥 Video Production</h2>
+<p class="small">No videos created yet.</p>
+</div>
+<div class="card">
+<h2>✅ Approval Centre</h2>
+<p class="small">Your videos will appear here for approval before uploading.</p>
+</div>
+<div class="card">
+<h2>📺 YouTube Uploads</h2>
+<p class="small">YouTube is not connected yet.</p>
+</div>
+</main>
+<script>
+function generate(){
+const topic=document.getElementById('topic').value.trim();
+if(!topic){alert('Enter a topic first!');return;}
+document.getElementById('result').textContent=
+'Story idea: '+topic+'. Create a funny Roblox adventure with an unexpected ending!';
+}
+</script>
+</body>
+</html>
