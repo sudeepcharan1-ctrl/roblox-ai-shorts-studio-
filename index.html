@@ -28,10 +28,7 @@ margin:0;
 color:#a78bfa;
 }
 
-header p{
-color:#aaa;
-font-size:13px;
-}
+header p{color:#aaa;font-size:13px}
 
 main{
 padding:18px;
@@ -47,10 +44,7 @@ margin:14px 0;
 border:1px solid #303044;
 }
 
-h2{
-font-size:17px;
-margin-top:0;
-}
+h2{font-size:17px;margin-top:0}
 
 .stat{
 font-size:27px;
@@ -69,7 +63,7 @@ margin:5px 4px 5px 0;
 cursor:pointer;
 }
 
-button:active{opacity:0.8}
+button:active{opacity:.8}
 
 input,textarea{
 width:100%;
@@ -159,18 +153,11 @@ padding:20px;
 Enter a topic to create an original Roblox Shorts story prompt.
 </p>
 
-<input
-id="topic"
-placeholder="Example: A noob becomes the richest Roblox player"
->
+<input id="topic"
+placeholder="Example: A noob becomes the richest Roblox player">
 
-<button onclick="generate()">
-🚀 Generate Story
-</button>
-
-<button onclick="copyPrompt()">
-📋 Copy Story Prompt
-</button>
+<button onclick="generate()">🚀 Generate Story</button>
+<button onclick="copyPrompt()">📋 Copy Story Prompt</button>
 
 <p id="copyStatus" class="small"></p>
 
@@ -179,16 +166,15 @@ Your story prompt will appear here.
 </p>
 </div>
 
-<!-- ROBLOX SCRIPT STUDIO -->
+<!-- SCRIPT STUDIO -->
 
 <div class="card">
 
 <h2>🎬 Roblox Script Studio</h2>
 
 <p class="small">
-Paste your complete ChatGPT-generated Roblox story.
-The studio will recognize your six scene headings
-and organize them into separate cards.
+Paste your complete ChatGPT-generated story.
+The studio finds the six scenes and organizes them separately.
 </p>
 
 <textarea
@@ -248,7 +234,8 @@ let originalStory = "";
 
 function generate(){
 
-const topic = document.getElementById('topic').value.trim();
+const topic =
+document.getElementById('topic').value.trim();
 
 if(!topic){
 alert('Enter a Roblox story topic first!');
@@ -280,10 +267,6 @@ function pick(arr){
 return arr[Math.floor(Math.random()*arr.length)];
 }
 
-const hook = pick(hooks);
-const character = pick(characters);
-const ending = pick(endings);
-
 lastPrompt = `
 ROBLOX AI SHORTS STUDIO
 ORIGINAL STORY GENERATION PROMPT
@@ -292,13 +275,13 @@ STORY TOPIC:
 ${topic}
 
 OPENING HOOK:
-${hook}
+${pick(hooks)}
 
 MAIN CHARACTER:
-${character}
+${pick(characters)}
 
 UNEXPECTED ENDING:
-${ending}
+${pick(endings)}
 
 YOUR TASK:
 
@@ -313,20 +296,20 @@ Write an attention-grabbing opening for the first 3 seconds.
 3. CHARACTERS
 Introduce the main characters and their personalities.
 
-4. SIX SCENES
+4. SIX-SCENE STORY
 
-Scene 1: Introduce the situation.
-Scene 2: Introduce the main problem.
-Scene 3: Make the situation funny.
-Scene 4: Create an unexpected twist.
-Scene 5: Build suspense.
-Scene 6: Reveal the unexpected ending.
+SCENE 1: Introduce the situation.
+SCENE 2: Introduce the main problem.
+SCENE 3: Make the situation funny.
+SCENE 4: Create an unexpected twist.
+SCENE 5: Build suspense.
+SCENE 6: Reveal the unexpected ending.
 
 5. CHARACTER DIALOGUES
 Write natural and funny conversations.
 
 6. AI VIDEO GENERATION PROMPTS
-Write a detailed visual prompt for each scene.
+Write detailed visual prompts for each scene.
 
 Include:
 - Roblox-style 3D visuals.
@@ -340,16 +323,18 @@ Include:
 7. AUDIO
 Suggest suitable background music and sound effects.
 
-8. FINAL ENDING
-Make the ending surprising and satisfying.
+8. THUMBNAIL
+Suggest a clickable thumbnail.
+
+9. YOUTUBE UPLOAD DETAILS
+Suggest a title, description and hashtags.
 
 IMPORTANT RULES:
 - Make the story original.
 - Keep viewers interested.
 - Avoid repetitive storylines.
 - Make it suitable for YouTube Shorts.
-- Do not copy existing Roblox videos.
-- Target a short-form video of approximately 30-60 seconds.
+- Target 30-60 seconds.
 
 OUTPUT:
 Provide the complete story in an easy-to-follow format.
@@ -374,12 +359,16 @@ async function copyText(text,statusElement,successMessage){
 try{
 
 if(navigator.clipboard && window.isSecureContext){
+
 await navigator.clipboard.writeText(text);
+
 statusElement.textContent = successMessage;
 return;
+
 }
 
 const temp = document.createElement('textarea');
+
 temp.value = text;
 temp.style.position = 'fixed';
 temp.style.opacity = '0';
@@ -404,7 +393,7 @@ statusElement.textContent =
 
 }
 
-/* COPY STORY PROMPT */
+/* COPY PROMPT */
 
 async function copyPrompt(){
 
@@ -435,28 +424,64 @@ const status =
 document.getElementById('scriptStatus');
 
 if(!story){
+
 status.textContent = "⚠️ Paste your story first!";
 output.replaceChildren();
+organizedScenes = [];
+originalStory = "";
 return;
+
 }
 
-/* Accept multiple heading formats:
-   SCENE 1 – TITLE
-   Scene 1: TITLE
-   1. SCENE: TITLE
-   **SCENE 1 – TITLE**
-*/
+/* Find the SIX-SCENE STORY section only */
+
+const sectionRegex =
+/^\s*(?:#{1,6}\s*)?(?:\*\*)?3\.\s*SIX[-\s–—]*SCENE STORY\b.*$/im;
+
+const sectionMatch = sectionRegex.exec(story);
+
+if(!sectionMatch){
+
+status.textContent =
+"⚠️ Could not find section 3. SIX-SCENE STORY.";
+
+output.replaceChildren();
+organizedScenes = [];
+originalStory = "";
+return;
+
+}
+
+const sectionStart =
+sectionMatch.index + sectionMatch[0].length;
+
+const remainingStory =
+story.slice(sectionStart);
+
+/* Stop before section 4 */
+
+const nextSectionRegex =
+/^\s*(?:#{1,6}\s*)?(?:\*\*)?4\.\s*(?:BACKGROUND MUSIC|VIDEO EDITING|EDITING SETTINGS)\b/im;
+
+const nextSectionMatch =
+nextSectionRegex.exec(remainingStory);
+
+const storySection = nextSectionMatch
+? remainingStory.slice(0,nextSectionMatch.index)
+: remainingStory;
+
+/* Match only actual scene headings */
 
 const headingRegex =
-/^\s*(?:#{1,6}\s*)?(?:\*\*)?(?:SCENE\s*([1-6])\b|([1-6])\s*[.)-]\s*SCENE\b)(?:\*\*)?.*$/gim;
+/^\s*(?:#{1,6}\s*)?(?:\*\*)?SCENE\s*([1-6])\s*(?:[-–—:.)]|\b)(?:\s*[-–—:.)]?\s*)\S.*?(?:\*\*)?\s*$/gim;
 
-const matches = [...story.matchAll(headingRegex)];
+const matches = [...storySection.matchAll(headingRegex)];
 
 if(matches.length !== 6){
 
 status.textContent =
 "⚠️ Found " + matches.length +
-" scene headings. Please include exactly six headings: SCENE 1 through SCENE 6.";
+" headings inside the story section. Expected exactly six.";
 
 output.replaceChildren();
 organizedScenes = [];
@@ -465,34 +490,34 @@ return;
 
 }
 
-/* Extract scene numbers */
+/* Build scene content */
 
-const scenes = matches.map((match,index) => {
-
-const number = Number(match[1] || match[2]);
+const scenes = matches.map((match,index)=>{
 
 const start = match.index;
 
 const end = index + 1 < matches.length
-? matches[index + 1].index
-: story.length;
+? matches[index+1].index
+: storySection.length;
 
 return {
-number: number,
-content: story.slice(start,end).trim()
+number:Number(match[1]),
+content:storySection.slice(start,end).trim()
 };
 
 });
 
-/* Check for all six unique scene numbers */
+/* Validate scene numbers */
 
-const numbers = scenes.map(scene => scene.number);
+const numbers = scenes.map(scene=>scene.number);
 
-if(![1,2,3,4,5,6].every(number => numbers.includes(number)) ||
-new Set(numbers).size !== 6){
+if(
+new Set(numbers).size !== 6 ||
+![1,2,3,4,5,6].every(n=>numbers.includes(n))
+){
 
 status.textContent =
-"⚠️ Please include each scene number exactly once, from SCENE 1 to SCENE 6.";
+"⚠️ Please include each scene from 1 to 6 exactly once.";
 
 output.replaceChildren();
 organizedScenes = [];
@@ -501,18 +526,16 @@ return;
 
 }
 
-/* Sort scenes into correct order */
-
-scenes.sort((a,b) => a.number - b.number);
+scenes.sort((a,b)=>a.number-b.number);
 
 organizedScenes = scenes;
 originalStory = story;
 
 output.replaceChildren();
 
-/* Create individual scene cards */
+/* Display six scene cards */
 
-scenes.forEach(scene => {
+scenes.forEach(scene=>{
 
 const card = document.createElement('div');
 card.className = 'scene-card';
@@ -527,7 +550,7 @@ content.textContent = scene.content;
 const button = document.createElement('button');
 button.textContent = '📋 Copy Scene ' + scene.number;
 
-button.addEventListener('click', async () => {
+button.addEventListener('click',async()=>{
 
 await copyText(
 scene.content,
