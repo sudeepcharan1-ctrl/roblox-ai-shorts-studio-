@@ -3,870 +3,1063 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#10111b">
-<title>Roblox AI Shorts Studio V2</title>
+<title>Roblox AI Shorts Studio V4</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#10111b;color:#f7f6ff;font:15px Arial,sans-serif}
-header{padding:20px;background:#191a29;border-bottom:1px solid #34344b}
-h1{font-size:22px;color:#b69aff;margin:0}
-header p,.small{color:#aaa;font-size:13px;line-height:1.5}
-main{max-width:1050px;margin:auto;padding:14px}
-.card{background:#1c1d2d;border:1px solid #303044;border-radius:14px;padding:16px;margin:13px 0}
-h2{font-size:18px;margin:0 0 13px}
-h3{color:#c4b5fd}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #10111b;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background: #191a29;
+  padding: 20px 12px;
+  text-align: center;
+  border-bottom: 1px solid #34354a;
+}
+
+header h1 {
+  margin: 0;
+  color: #a99aff;
+  font-size: 23px;
+}
+
+header p {
+  color: #aaa;
+  font-size: 13px;
+}
+
+main {
+  max-width: 950px;
+  margin: auto;
+  padding: 12px;
+}
+
+.card {
+  background: #1b1c2c;
+  border: 1px solid #34354a;
+  border-radius: 14px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+h2 {
+  color: #b5a8ff;
+  font-size: 19px;
+  margin-top: 0;
+}
+
+h3 {
+  color: #ddd;
+  font-size: 15px;
+}
+
+.small {
+  color: #999;
+  font-size: 12px;
+}
 </style>
 </head>
 
 <style>
-button{background:#8057ed;color:white;border:0;padding:11px 14px;border-radius:9px;margin:4px;cursor:pointer;font-weight:bold}
-button.secondary{background:#39394f}
-button.danger{background:#923e56}
-input,textarea,select{width:100%;padding:12px;margin:6px 0;background:#11121d;color:white;border:1px solid #48465e;border-radius:8px;font:inherit}
-input[type=color]{height:45px;padding:4px}
-input[type=range]{padding:0}
-textarea{min-height:110px;resize:vertical;line-height:1.5}
-label{display:block;color:#c9c4df;font-size:13px;margin-top:9px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.row>*{flex:1;min-width:100px}
-.preview{max-width:360px;margin:auto;background:#080912;border:2px solid #45415f;border-radius:13px;overflow:hidden}
-canvas{display:block;width:100%;height:auto}
-.controls{display:flex;flex-wrap:wrap;justify-content:center;margin-top:10px}
-.status{color:#b69aff;font-size:13px;min-height:20px;line-height:1.5}
-.timeline{display:flex;gap:8px;overflow-x:auto;padding:10px 0}
-.sceneBtn{min-width:90px;background:#292940;border:1px solid #48465e;border-radius:9px;padding:12px;text-align:center}
-.sceneBtn.active{border:2px solid #b69aff;background:#41305e}
-.bar{height:9px;background:#11121d;border-radius:20px;overflow:hidden;margin:10px 0}
-.bar span{display:block;height:100%;width:0%;background:#b69aff}
-.voicebox{background:#24253a;border:1px solid #44415f;border-radius:10px;padding:12px;margin:10px 0}
-.voicebox h3{margin:0 0 8px}
-.stat{font-size:24px;color:#b69aff;font-weight:bold}
-footer{text-align:center;color:#777;padding:20px;font-size:12px}
-@media(max-width:600px){
-.grid{grid-template-columns:1fr}
-main{padding:9px}
-.card{padding:12px}
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  background: #7562e8;
+  color: white;
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 14px;
+  margin: 4px 2px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(.97);
+}
+
+.green {
+  background: #168b65;
+}
+
+.red {
+  background: #bd4257;
+}
+
+.secondary {
+  background: #34354a;
+}
+
+input, select, textarea {
+  width: 100%;
+  background: #11121d;
+  color: white;
+  border: 1px solid #44455d;
+  border-radius: 8px;
+  padding: 11px;
+  margin: 7px 0 12px;
+}
+
+textarea {
+  min-height: 85px;
+  resize: vertical;
+}
+
+label {
+  display: block;
+  color: #c5c5d3;
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.row button {
+  flex: 1;
+}
+
+.hidden {
+  display: none;
+}
+
+.idea, .scene {
+  background: #25263b;
+  border: 1px solid #464765;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 9px 0;
+}
+
+.idea h3 {
+  color: #c1b5ff;
+}
+
+.status {
+  color: #8ee5bc;
+  font-size: 13px;
+}
+
+#preview {
+  width: 100%;
+  background: #080910;
+  border-radius: 12px;
+}
+
+@media(max-width:500px) {
+  header h1 {font-size:19px}
+  main {padding:9px}
+  .card {padding:12px}
 }
 </style>
 </head>
 <body>
+
 <header>
-<h1>🎬 Roblox AI Shorts Studio V2</h1>
-<p>Create scenes, animate characters, add voices and export videos.</p>
+  <h1>🎮 Roblox AI Shorts Studio V4</h1>
+  <p>Ideas • Stories • Animation • Voices • YouTube SEO</p>
 </header>
+
 <main>
-
-<section class="card">
-<h2>📊 Creator Dashboard</h2>
-<div class="grid">
-<div>
-<p class="small">Scenes loaded</p>
-<div class="stat" id="sceneCount">6</div>
-</div>
-<div>
-<p class="small">Current scene</p>
-<div class="stat" id="currentScene">1 / 6</div>
-</div>
-</div>
-<p class="status" id="saveStatus">Studio ready.</p>
-</section>
-
-<section class="card">
-<h2>📖 1. Story Input</h2>
-<label>Story title</label>
-<input id="storyTitle" value="The Noob's Adventure">
-<label>Paste your six-scene story</label>
-<textarea id="storyInput" placeholder="SCENE 1
-Nooby: Hello!
-
-SCENE 2
-Pro: Where are you going?
-
-SCENE 3
-...
-
-SCENE 4
-...
-
-SCENE 5
-...
-
-SCENE 6
-..."></textarea>
-<button onclick="loadStory()">Load Six Scenes</button>
-<button class="secondary" onclick="saveProject()">Save Project</button>
-<p class="status" id="storyStatus"></p>
-</section>
    
 <section class="card">
-<h2>🎮 2. Animated Scene Preview</h2>
-<div class="preview">
-<canvas id="stage" width="540" height="960"></canvas>
+<h2>💡 AI Idea Generator</h2>
+<p class="small">Discover your next Roblox Shorts idea.</p>
+
+<label>Genre</label>
+<select id="genre">
+<option>Comedy</option>
+<option>Horror</option>
+<option>Friendship</option>
+<option>Siblings</option>
+<option>School</option>
+<option>Adventure</option>
+<option>Emotional</option>
+<option>Survival</option>
+<option>Rich vs Poor</option>
+<option>Family</option>
+</select>
+
+<label>Video style</label>
+<select id="style">
+<option>Funny and entertaining</option>
+<option>Unexpected plot twist</option>
+<option>Emotional ending</option>
+<option>Suspenseful</option>
+<option>Viral-style storytelling</option>
+</select>
+
+<label>Custom topic (optional)</label>
+<input id="topic" placeholder="Enter your own topic">
+
+<button onclick="generateIdeas()">✨ Generate Ideas</button>
+<div id="ideas"></div>
+</section>
+
+<section class="card">
+<h2>📖 Automatic Story Generator</h2>
+
+<label>Story idea</label>
+<input id="storyIdea" placeholder="Choose an idea or enter one">
+
+<div class="grid">
+<div>
+<label>Main character</label>
+<input id="hero" value="Nooby">
 </div>
-<div class="controls">
-<button onclick="previousScene()">◀ Previous</button>
+<div>
+<label>Second character</label>
+<input id="friend" value="Bacon">
+</div>
+</div>
+
+<label>Story duration</label>
+<select id="length">
+<option value="30">30 seconds</option>
+<option value="45">45 seconds</option>
+<option value="60" selected>60 seconds</option>
+<option value="90">90 seconds</option>
+</select>
+
+<button onclick="generateStory()">🎬 Generate Full Story</button>
+<button class="secondary" onclick="randomStory()">🎲 Random Story</button>
+
+<div id="storyOutput"></div>
+</section>
+
+<section class="card">
+<h2>🎭 Six Scene Story Editor</h2>
+<p class="small">Customize every character, action and dialogue.</p>
+
+<div id="sceneEditor"></div>
+
+<button onclick="applyStory()">↻ Refresh Scenes</button>
+<button class="green" onclick="playAll()">▶ Play Full Story</button>
+</section>
+
+<section class="card">
+<h2>🎥 Animation Preview</h2>
+
+<canvas id="preview" width="720" height="405"></canvas>
+
+<div class="row">
 <button onclick="playScene()">▶ Play Scene</button>
-<button onclick="nextScene()">Next ▶</button>
+<button class="secondary" onclick="stopPlayback()">⏹ Stop</button>
+<button class="secondary" onclick="previousScene()">◀ Previous</button>
+<button class="secondary" onclick="nextScene()">Next ▶</button>
 </div>
-<p class="status" id="previewStatus">Scene 1 ready.</p>
+
+<p id="sceneStatus" class="status">Scene 1 of 6</p>
 </section>
 
 <section class="card">
-<h2>🎞️ 3. Six-Scene Timeline</h2>
-<div class="timeline" id="timeline"></div>
-<label>Scene duration in seconds</label>
-<input id="duration" type="number" min="1" max="30" value="5">
-<label>Scene action / description</label>
-<textarea id="sceneAction" placeholder="Describe what happens"></textarea>
-<label>Character name</label>
-<input id="characterName" value="Nooby">
-<label>Character dialogue</label>
-<textarea id="characterDialogue" placeholder="Enter dialogue"></textarea>
-<label>Subtitle text</label>
-<input id="subtitleText" placeholder="Subtitle shown in video">
-<button onclick="updateScene()">Update Scene</button>
-<button class="secondary" onclick="setSubtitle()">Use Dialogue as Subtitle</button>
-<p class="status" id="timelineStatus"></p>
-</section>
-    
-<section class="card">
-<h2>🎨 4. Character and Background</h2>
-<label>Character name</label>
-<input id="appearanceName" value="Nooby">
-<label>Character style</label>
-<select id="characterType">
-<option value="noob">Classic Noob</option>
-<option value="pro">Pro Player</option>
-<option value="guest">Guest</option>
-<option value="admin">Admin</option>
-<option value="villain">Villain</option>
-</select>
-<label>Shirt color</label>
-<input type="color" id="shirtColor" value="#ffcc00">
-<label>Background</label>
-<select id="background">
-<option value="city">Roblox City</option>
-<option value="school">School</option>
-<option value="forest">Dark Forest</option>
-<option value="house">Luxury House</option>
-<option value="arena">Battle Arena</option>
-<option value="sky">Sky Island</option>
-</select>
-<button onclick="applyAppearance()">Apply to Current Scene</button>
-<p class="status" id="appearanceStatus"></p>
+<h2>⏱ Story Timeline</h2>
+<div id="timeline"></div>
+<p class="small">Select a scene to edit or preview it.</p>
 </section>
 
 <section class="card">
-<h2>🗣️ 5. Multi-Character Voice Studio</h2>
-<p class="small">Choose an installed browser voice for each character.</p>
-<button onclick="loadVoices()">🔄 Refresh Available Voices</button>
-<div id="voiceAssignments">
-<p class="small">Load a story to detect speakers.</p>
+<h2>💬 Subtitle Settings</h2>
+<label>
+<input type="checkbox" id="subtitles" checked style="width:auto">
+Show subtitles in animation
+</label>
+</section>
+
+<section class="card">
+<h2>🎙 Voice Studio</h2>
+
+<label>Character</label>
+<select id="voiceCharacter"></select>
+
+<label>Browser voice</label>
+<select id="voiceSelect"></select>
+
+<label>Speaking speed</label>
+<input id="voiceRate" type="range" min=".6" max="1.5" step=".1" value="1">
+
+<label>Voice pitch</label>
+<input id="voicePitch" type="range" min=".5" max="2" step=".1" value="1">
+
+<button onclick="previewVoice()">🔊 Test Voice</button>
+<button onclick="speakScene()">🗣 Speak Scene</button>
+<button class="green" onclick="speakAll()">▶ Speak Full Story</button>
+<button class="red" onclick="stopVoice()">Stop Voice</button>
+
+<p id="voiceStatus" class="status">Ready</p>
+</section>
+
+<section class="card">
+<h2>📥 Export Video</h2>
+
+<label>Video quality</label>
+<select id="quality">
+<option value="1">Standard</option>
+<option value="1.5" selected>High</option>
+<option value="2">Very High</option>
+</select>
+
+<button class="green" onclick="exportVideo()">🎬 Export Video</button>
+<p id="exportStatus" class="status">Ready to export.</p>
+
+<p class="small">
+Exports animation and subtitles. Browser recording may not include spoken voice audio.
+MP4 is used only when supported; otherwise WebM is used.
+</p>
+</section>
+
+<section class="card">
+<h2>🚀 YouTube Viral & SEO Assistant</h2>
+
+<p class="small">
+Generate your YouTube upload package from your completed story.
+</p>
+
+<label>Target audience</label>
+<select id="audience">
+<option>Worldwide English audience</option>
+<option>India audience</option>
+<option>Indian gaming audience</option>
+</select>
+
+<label>Title style</label>
+<select id="titleStyle">
+<option>Curiosity and suspense</option>
+<option>Funny and entertaining</option>
+<option>Emotional</option>
+<option>Unexpected plot twist</option>
+</select>
+
+<button class="green" onclick="generateSEO()">
+✨ Generate YouTube Upload Package
+</button>
+
+<h3>🔥 Video Title</h3>
+<textarea id="seoTitle" readonly></textarea>
+<button onclick="copySEO('seoTitle')">Copy Title</button>
+</section>
+
+<section class="card">
+<h2>📝 SEO Description</h2>
+<textarea id="seoDescription" rows="8" readonly></textarea>
+<button onclick="copySEO('seoDescription')">Copy Description</button>
+
+<h2>#️⃣ Viral Hashtags</h2>
+<textarea id="seoHashtags" readonly></textarea>
+<button onclick="copySEO('seoHashtags')">Copy Hashtags</button>
+
+<h2>🔎 YouTube SEO Tags</h2>
+<textarea id="seoTags" readonly></textarea>
+<button onclick="copySEO('seoTags')">Copy SEO Tags</button>
+</section>
+
+<section class="card">
+<h2>⏰ Best Time to Post</h2>
+<div id="postingTime">
+Generate your upload package first.
 </div>
-<label>Test dialogue</label>
-<input id="voiceTest" value="Hello! Welcome to Roblox!">
-<label>Preview character</label>
-<select id="previewCharacter"></select>
-<button onclick="previewSelectedVoice()">▶ Preview Voice</button>
-<button onclick="speakDialogue()">▶ Play Scene Dialogue</button>
-<button class="danger" onclick="stopVoice()">■ Stop Voice</button>
-<p class="status" id="voiceStatus">Browser voice ready.</p>
+
+<p class="small">
+Times are suggested testing windows in IST, not guaranteed viral times.
+Use your YouTube Studio audience analytics for better recommendations.
+</p>
 </section>
 
 <section class="card">
-<h2>🎬 6. Full Video Preview</h2>
-<button onclick="playAllScenes()">▶ Play Full Story</button>
-<button class="danger" onclick="stopAllScenes()">■ Stop Story</button>
-<p class="status" id="fullStatus">Ready to play.</p>
-</section>
+<h2>💾 Project Manager</h2>
 
-<section class="card">
-<h2>📤 7. Video Export</h2>
-<p class="small">Record your animated scenes directly from the browser canvas.</p>
-<label>Export format</label>
-<select id="exportFormat">
-<option value="auto">Automatic best supported format</option>
-<option value="mp4">MP4 (if supported)</option>
-<option value="webm">WebM</option>
-</select>
-<label>Recording quality</label>
-<select id="exportQuality">
-<option value="5">Standard</option>
-<option value="8" selected>High</option>
-<option value="12">Very high</option>
-</select>
-<div class="bar"><span id="exportProgress"></span></div>
-<button onclick="startExport()">● Export Full Video</button>
-<button class="danger" onclick="stopExport()">■ Stop Export</button>
-<p class="status" id="exportStatus">Waiting to export.</p>
-<a id="downloadLink" hidden>Download video</a>
-</section>
-
-<section class="card">
-<h2>💾 8. Project Backup</h2>
 <button onclick="saveProject()">Save Project</button>
-<button class="secondary" onclick="downloadBackup()">Download Backup</button>
-<button class="danger" onclick="clearProject()">Clear Project</button>
+<button onclick="downloadProject()">Download Backup</button>
+
+<label>Import project</label>
+<input type="file" id="importFile" accept=".json">
+
+<button onclick="importProject()">Import Backup</button>
+<p id="saveStatus" class="status"></p>
 </section>
 
-<section class="card">
-<h2>ℹ️ About this Studio</h2>
-<p class="small">This studio creates animated Roblox-inspired block characters using Canvas. It is not an actual Roblox 3D renderer.</p>
-<p class="small">Voice playback uses your browser's installed speech voices. Voice audio is not included in canvas video recording.</p>
-<p class="small">MP4 export depends on browser support. WebM is the fallback.</p>
-</section>
 </main>
-<footer>Roblox AI Shorts Studio V2 · Free Browser Creator</footer>
+
+<footer style="text-align:center;padding:20px;color:#777">
+Roblox AI Shorts Studio V4
+</footer>
+
 <script>
-const $=id=>document.getElementById(id);
-const KEY='robloxShortsStudioV2';
+   
+let scenes = [];
+let currentScene = 0;
+let playTimer = null;
+let voices = [];
 
-let scenes=Array.from({length:6},(_,i)=>({
-n:i+1,
-action:'A Roblox character enters the scene.',
-speaker:'Nooby',
-dialogue:'',
-subtitle:'',
-duration:5,
-background:'city',
-character:'noob',
-color:'#ffcc00'
-}));
+const ideaBank = {
+Comedy: [
+"A Nooby becomes the school principal",
+"A Bacon steals everyone's lunch",
+"A rich player pretends to be poor",
+"Two friends switch identities",
+"A Nooby accidentally becomes famous"
+],
+Horror: [
+"A mysterious player joins a private server",
+"A school has a secret room",
+"A Nooby receives messages from the future",
+"A strange NPC follows the players"
+],
+Friendship: [
+"Two enemies become best friends",
+"A lonely Nooby finds a true friend",
+"A friend sacrifices everything to help"
+],
+Siblings: [
+"A brother hides his sister's game",
+"A sister becomes richer than her brother",
+"Two siblings compete for one computer"
+],
+School: [
+"The new student is secretly a millionaire",
+"A student gets caught cheating",
+"The school announces a crazy challenge"
+],
+Adventure: [
+"Friends discover a secret island",
+"A Nooby finds a magical portal",
+"Players get trapped in another world"
+],
+Emotional: [
+"A poor Nooby helps a stranger",
+"A forgotten friend returns",
+"A player gives away their only reward"
+],
+Survival: [
+"Players survive a haunted house",
+"A Nooby gets trapped in the forest",
+"Friends survive a zombie invasion"
+],
+"Rich vs Poor": [
+"A poor player becomes a millionaire",
+"A rich player loses everything",
+"A poor Nooby teaches a rich player a lesson"
+],
+Family: [
+"A family moves into a strange house",
+"A father surprises his children",
+"A family tries to survive without internet"
+]
+};
+   
+function escapeHTML(v) {
+ return String(v).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",
+  '"':"&quot;","'":"&#39;"
+ })[c]);
+}
 
-let current=0;
-let voiceMap={};
-let availableVoices=[];
-let speechQueue=[];
-let playingAll=false;
-let sceneTimer=null;
-let animationId=null;
-let recording=null;
-let recordedChunks=[];
-let exportTimer=null;
-let exportScene=0;
-let exportElapsed=0;
+function generateIdeas() {
+ const genre = document.getElementById("genre").value;
+ const bank = ideaBank[genre] || ideaBank.Comedy;
+ const topic = document.getElementById("topic").value.trim();
+ const style = document.getElementById("style").value;
+
+ let ideas = [...bank].sort(()=>Math.random()-.5);
+
+ if(topic) ideas.unshift(topic);
+
+ document.getElementById("ideas").innerHTML =
+ ideas.slice(0,5).map((idea,i)=>`
+ <div class="idea">
+ <h3>${i+1}. ${escapeHTML(idea)}</h3>
+ <p class="small">${escapeHTML(genre)} • ${escapeHTML(style)}</p>
+ <button onclick="chooseIdea(${JSON.stringify(idea).replace(/"/g,'&quot;')})">
+ Use This Idea
+ </button>
+ </div>
+ `).join("");
+}
+
+function chooseIdea(idea) {
+ document.getElementById("storyIdea").value=idea;
+ generateStory();
+}
+   
+function generateStory() {
+ const idea=document.getElementById("storyIdea").value.trim();
+ if(!idea) return alert("Enter a story idea!");
+
+ const hero=document.getElementById("hero").value||"Nooby";
+ const friend=document.getElementById("friend").value||"Bacon";
+ const genre=document.getElementById("genre").value;
+
+ const endings={
+ Comedy:"Everyone laughs when the truth is revealed!",
+ Horror:"A mysterious shadow appears behind them...",
+ Friendship:"They promise to stay friends forever.",
+ Siblings:"They finally learn to respect each other.",
+ School:"The entire school is shocked!",
+ Adventure:"They discover an even bigger mystery.",
+ Emotional:"Kindness turns out to be more valuable than money.",
+ Survival:"They escape just before everything collapses.",
+ "Rich vs Poor":"The rich player learns an important lesson.",
+ Family:"The family comes together stronger than before."
+ };
+
+ const ending=endings[genre]||"Nobody expected this ending!";
+
+ const lines=[
+ `${idea}! ${hero} discovers something strange.`,
+ `${friend} suddenly arrives and asks what happened.`,
+ `${hero} explains the surprising situation.`,
+ `But suddenly, ${friend} notices a huge problem!`,
+ `${hero} and ${friend} work together to solve it.`,
+ ending
+ ];
+
+ const actions=[
+ "Standing in the street",
+ "Walking towards each other",
+ "Looking surprised",
+ "Arguing and moving around",
+ "Running towards the camera",
+ "Celebrating together"
+ ];
+
+ scenes=lines.map((line,i)=>({
+  title:"Scene "+(i+1),
+  speaker:i%2===0?hero:friend,
+  dialogue:line,
+  action:actions[i]
+ }));
+
+ document.getElementById("storyOutput").innerHTML=
+ `<div class="idea">
+ <h3>Story generated successfully!</h3>
+ <p>${escapeHTML(idea)}</p>
+ <button onclick="applyStory()">Use This Story</button>
+ </div>`;
+
+ applyStory();
+}
+
+function randomStory() {
+ const genre=document.getElementById("genre");
+ genre.selectedIndex=Math.floor(Math.random()*genre.options.length);
+ const bank=ideaBank[genre.value];
+ document.getElementById("storyIdea").value=
+ bank[Math.floor(Math.random()*bank.length)];
+ generateStory();
+}
+   
+function applyStory() {
+ if(!scenes.length) return;
+
+ document.getElementById("sceneEditor").innerHTML=
+ scenes.map((s,i)=>`
+ <div class="scene">
+ <h3>Scene ${i+1}</h3>
+ <label>Character</label>
+ <input value="${escapeHTML(s.speaker)}"
+ onchange="editScene(${i},'speaker',this.value)">
+ <label>Dialogue</label>
+ <textarea onchange="editScene(${i},'dialogue',this.value)">${escapeHTML(s.dialogue)}</textarea>
+ <label>Action</label>
+ <input value="${escapeHTML(s.action)}"
+ onchange="editScene(${i},'action',this.value)">
+ <button onclick="selectScene(${i})">Preview Scene</button>
+ </div>
+ `).join("");
+
+ renderTimeline();
+ renderCharacterList();
+ drawScene();
+}
+
+function editScene(i,key,value) {
+ scenes[i][key]=value;
+ renderTimeline();
+ drawScene();
+}
+
+function renderTimeline() {
+ document.getElementById("timeline").innerHTML=
+ scenes.map((s,i)=>`
+ <button class="${i===currentScene?'':'secondary'}"
+ onclick="selectScene(${i})">
+ ${i+1}. ${escapeHTML(s.title)}
+ </button>
+ `).join("");
+}
+
+function selectScene(i) {
+ currentScene=Math.max(0,Math.min(5,i));
+ renderTimeline();
+ drawScene();
+ document.getElementById("sceneStatus").textContent=
+ `Scene ${currentScene+1} of 6`;
+}
+
+function nextScene() {
+ selectScene((currentScene+1)%6);
+}
+
+function previousScene() {
+ selectScene((currentScene+5)%6);
+}
+   
+const canvas=document.getElementById("preview");
+const ctx=canvas.getContext("2d");
+
+function drawCharacter(x,y,color,name) {
+ ctx.fillStyle=color;
+ ctx.fillRect(x,y,65,65);
+
+ ctx.fillStyle="#f1c59c";
+ ctx.fillRect(x+10,y-55,45,45);
+
+ ctx.fillStyle="#111";
+ ctx.fillRect(x+20,y-40,6,6);
+ ctx.fillRect(x+40,y-40,6,6);
+
+ ctx.fillRect(x+20,y+65,12,45);
+ ctx.fillRect(x+42,y+65,12,45);
+
+ ctx.fillStyle="#fff";
+ ctx.textAlign="center";
+ ctx.font="bold 15px Arial";
+ ctx.fillText(name.slice(0,12),x+32,y-65);
+}
+
+function wrapText(text,x,y,width,lineHeight) {
+ const words=String(text).split(" ");
+ let line="";
+ let yy=y;
+
+ for(const word of words) {
+  const test=line+word+" ";
+  if(ctx.measureText(test).width>width && line) {
+   ctx.fillText(line,x,yy);
+   line=word+" ";
+   yy+=lineHeight;
+  } else line=test;
+ }
+ ctx.fillText(line,x,yy);
+   }
+   
+function drawScene() {
+ if(!scenes.length) return;
+
+ const s=scenes[currentScene];
+ const colors=["#e75b69","#e8b947","#5599df","#53b98c"];
+
+ ctx.clearRect(0,0,720,405);
+
+ ctx.fillStyle="#7bc8ed";
+ ctx.fillRect(0,0,720,275);
+
+ ctx.fillStyle="#4d9c58";
+ ctx.fillRect(0,275,720,130);
+
+ ctx.fillStyle="#f9db8c";
+ ctx.beginPath();
+ ctx.arc(620,75,38,0,Math.PI*2);
+ ctx.fill();
+
+ drawCharacter(180,245,colors[currentScene%4],s.speaker);
+ drawCharacter(475,245,colors[(currentScene+1)%4],"Friend");
+
+ ctx.fillStyle="rgba(0,0,0,.72)";
+ ctx.fillRect(15,320,690,72);
+
+ ctx.fillStyle="#fff";
+ ctx.textAlign="center";
+ ctx.font="bold 18px Arial";
+ ctx.fillText(s.speaker,360,343);
+
+ if(document.getElementById("subtitles").checked) {
+  ctx.font="16px Arial";
+  wrapText(s.dialogue,360,365,650,18);
+ }
+}
+
+function playScene() {
+ stopPlayback();
+ let count=0;
+
+ playTimer=setInterval(()=>{
+  drawScene();
+  count++;
+  if(count>=12) stopPlayback();
+ },150);
+}
+
+function stopPlayback() {
+ clearInterval(playTimer);
+ playTimer=null;
+}
+
+function playAll() {
+ stopPlayback();
+ let i=0;
+ selectScene(0);
+
+ playTimer=setInterval(()=>{
+  if(i>=5) {
+   stopPlayback();
+   return;
+  }
+  i++;
+  selectScene(i);
+ },3000);
+}
+   
+function loadVoices() {
+ voices=speechSynthesis.getVoices();
+ const select=document.getElementById("voiceSelect");
+ select.innerHTML="";
+
+ voices.forEach((v,i)=>{
+  const option=document.createElement("option");
+  option.value=i;
+  option.textContent=v.name+" ("+v.lang+")";
+  select.appendChild(option);
+ });
+}
+
+speechSynthesis.onvoiceschanged=loadVoices;
+loadVoices();
+
+function renderCharacterList() {
+ const names=[...new Set(scenes.map(s=>s.speaker))];
+
+ document.getElementById("voiceCharacter").innerHTML=
+ names.map(n=>`<option>${escapeHTML(n)}</option>`).join("");
+}
+
+function speakText(text) {
+ if(!("speechSynthesis" in window)) {
+  alert("Speech not supported.");
+  return;
+ }
+
+ speechSynthesis.cancel();
+
+ const u=new SpeechSynthesisUtterance(text);
+ const voice=voices[document.getElementById("voiceSelect").value];
+
+ if(voice) u.voice=voice;
+
+ u.rate=Number(document.getElementById("voiceRate").value);
+ u.pitch=Number(document.getElementById("voicePitch").value);
+
+ speechSynthesis.speak(u);
+
+ document.getElementById("voiceStatus").textContent="Speaking...";
+}
+
+function previewVoice() {
+ speakText("Hello! Welcome to Roblox AI Shorts Studio!");
+}
+
+function speakScene() {
+ speakText(scenes[currentScene].dialogue);
+     }
+   
+function speakAll() {
+ speechSynthesis.cancel();
+
+ let i=0;
+
+ function next() {
+  if(i>=scenes.length) return;
+
+  const u=new SpeechSynthesisUtterance(
+   scenes[i].speaker+" says: "+scenes[i].dialogue
+  );
+
+  const voice=voices[document.getElementById("voiceSelect").value];
+  if(voice) u.voice=voice;
+
+  u.rate=Number(document.getElementById("voiceRate").value);
+  u.pitch=Number(document.getElementById("voicePitch").value);
+
+  u.onend=()=>{
+   i++;
+   next();
+  };
+
+  speechSynthesis.speak(u);
+ }
+
+ next();
+}
+
+function stopVoice() {
+ speechSynthesis.cancel();
+ document.getElementById("voiceStatus").textContent="Voice stopped.";
+}
+   
+function generateSEO() {
+ if(!scenes.length) return alert("Generate a story first!");
+
+ const genre=document.getElementById("genre").value;
+ const idea=document.getElementById("storyIdea").value.trim();
+ const hero=document.getElementById("hero").value.trim();
+ const audience=document.getElementById("audience").value;
+ const style=document.getElementById("titleStyle").value;
+
+ const titleOptions={
+ "Curiosity and suspense":[
+  `You Won't Believe What Happened! 😱 | Roblox`,
+  `${idea}... The Ending Is CRAZY!`,
+  `Nobody Expected This Roblox Twist! 🤯`
+ ],
+ "Funny and entertaining":[
+  `${idea} 😂 | Roblox Funny Story`,
+  `This Nooby Is Too Funny! 🤣`,
+  `The Funniest Roblox Story Ever?`
+ ],
+ "Emotional":[
+  `${idea} ❤️ | Roblox Emotional Story`,
+  `This Roblox Ending Will Touch Your Heart`,
+  `A Roblox Story About True Friendship ❤️`
+ ],
+ "Unexpected plot twist":[
+  `${idea} 😳 | Roblox Plot Twist`,
+  `The Biggest Roblox Plot Twist Ever!`,
+  `Wait Until You See The Ending! 🤯`
+ ]
+ };
+
+ const titles=titleOptions[style];
+ const title=titles[Math.floor(Math.random()*titles.length)];
+
+ const description=
+`Welcome to an exciting Roblox ${genre} story!
+
+${idea}
+
+Follow ${hero||"our main character"} through an entertaining Roblox adventure with surprises, twists and memorable moments.
+
+🎮 Genre: ${genre}
+🎬 Format: Roblox Shorts
+🌍 Audience: ${audience}
+
+If you enjoyed this video:
+👍 Like
+💬 Comment your favourite scene
+🔔 Subscribe for more Roblox stories!
+
+#Roblox #RobloxShorts #Gaming #Shorts`;
+
+ document.getElementById("seoTitle").value=title;
+ document.getElementById("seoDescription").value=description;
+
+ generateTags(genre,idea);
+ generateHashtags(genre);
+ generatePostingTime();
+}
+function generateHashtags(genre) {
+ const tags=[
+  "#Roblox",
+  "#RobloxShorts",
+  "#RobloxStories",
+  "#Gaming",
+  "#Shorts",
+  "#RobloxAnimation",
+  "#"+genre.replace(/[^a-zA-Z0-9]/g,"")
+ ];
+
+ document.getElementById("seoHashtags").value=tags.join(" ");
+}
+
+function generateTags(genre,idea) {
+ const tags=[
+  "roblox",
+  "roblox shorts",
+  "roblox story",
+  "roblox animation",
+  "roblox funny moments",
+  "roblox short film",
+  "gaming shorts",
+  "roblox gameplay",
+  genre.toLowerCase(),
+  idea.toLowerCase()
+ ];
+
+ document.getElementById("seoTags").value=tags.join(", ");
+}
+
+function generatePostingTime() {
+ const audience=document.getElementById("audience").value;
+
+ const choices=[
+  {day:"Friday",time:"6:00 PM – 8:00 PM"},
+  {day:"Saturday",time:"6:00 PM – 9:00 PM"},
+  {day:"Sunday",time:"6:00 PM – 8:00 PM"},
+  {day:"Wednesday",time:"7:00 PM – 9:00 PM"},
+  {day:"Thursday",time:"7:00 PM – 9:00 PM"}
+ ];
+
+ const pick=choices[Math.floor(Math.random()*choices.length)];
+
+ document.getElementById("postingTime").innerHTML=
+ `<div class="idea">
+ <h3>📅 ${pick.day}</h3>
+ <h2>${pick.time} IST</h2>
+ <p class="small">Suggested testing time for ${escapeHTML(audience)}.</p>
+ </div>`;
+}
+
+function copySEO(id) {
+ const el=document.getElementById(id);
+
+ if(navigator.clipboard && window.isSecureContext) {
+  navigator.clipboard.writeText(el.value)
+   .then(()=>alert("Copied!"))
+   .catch(()=>fallbackCopy(el));
+ } else fallbackCopy(el);
+}
+
+function fallbackCopy(el) {
+ el.select();
+ document.execCommand("copy");
+ alert("Copied!");
+}
+   
+function exportVideo() {
+ if(!window.MediaRecorder || !canvas.captureStream) {
+  return alert("Video recording is not supported.");
+ }
+
+ stopPlayback();
+ stopVoice();
+
+ const stream=canvas.captureStream(30);
+ let mime="video/webm";
+
+ if(MediaRecorder.isTypeSupported("video/mp4")) {
+  mime="video/mp4";
+ }
+
+ const recorder=new MediaRecorder(stream,{mimeType:mime});
+ const chunks=[];
+
+ recorder.ondataavailable=e=>{
+  if(e.data.size) chunks.push(e.data);
+ };
+
+ recorder.onstop=()=>{
+  const blob=new Blob(chunks,{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download=mime.includes("mp4")?
+   "roblox-short.mp4":"roblox-short.webm";
+
+  a.click();
+  URL.revokeObjectURL(url);
+
+  document.getElementById("exportStatus").textContent="Export complete!";
+ };
+
+ recorder.start();
+
+ let i=0;
+ selectScene(0);
+
+ const timer=setInterval(()=>{
+  i++;
+
+  if(i>=6) {
+   clearInterval(timer);
+   recorder.stop();
+   return;
+  }
+
+  selectScene(i);
+ },3000);
+
+ document.getElementById("exportStatus").textContent="Recording...";
+}
+
+function saveProject() {
+ localStorage.setItem("robloxV4",JSON.stringify(scenes));
+ document.getElementById("saveStatus").textContent="Project saved!";
+}
+
+function downloadProject() {
+ const blob=new Blob([JSON.stringify(scenes,null,2)],{
+  type:"application/json"
+ });
+
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="roblox-story-backup.json";
+ a.click();
+ URL.revokeObjectURL(url);
+}
+
+function importProject() {
+ const file=document.getElementById("importFile").files[0];
+ if(!file) return alert("Choose a backup file!");
+
+ const reader=new FileReader();
+
+ reader.onload=()=>{
+  try {
+   const data=JSON.parse(reader.result);
+
+   if(!Array.isArray(data)||data.length!==6) throw Error();
+
+   scenes=data;
+   applyStory();
+   alert("Project imported!");
+  } catch(e) {
+   alert("Invalid backup file.");
+  }
+ };
+
+ reader.readAsText(file);
+}
+
+const saved=localStorage.getItem("robloxV4");
+
+if(saved) {
+ try {
+  const data=JSON.parse(saved);
+  if(Array.isArray(data)&&data.length===6) scenes=data;
+ } catch(e) {}
+}
+
+if(!scenes.length) {
+ document.getElementById("storyIdea").value=
+ "A Nooby discovers a secret door in school";
+ generateStory();
+} else {
+ applyStory();
+}
+
 </script>
 </body>
 </html>
 
-function setStatus(id,msg){
- const el=$(id);
- if(el)el.textContent=msg;
-}
-
-function getScene(){return scenes[current]}
-
-function loadStory(){
- const raw=$('storyInput').value.trim();
- if(!raw){
-  setStatus('storyStatus','Paste a story first.');
-  return;
- }
- const matches=[...raw.matchAll(/^\s*(?:#{1,6}\s*)?(?:\*\*)?SCENE\s*([1-6])\s*(?:[-–—:.)]|\b).*$/gim)];
- const nums=matches.map(m=>Number(m[1]));
- if(matches.length!==6||new Set(nums).size!==6){
-  setStatus('storyStatus','Include SCENE 1 through SCENE 6 exactly once.');
-  return;
- }
- scenes=matches.map((m,i)=>{
-  const end=i+1<matches.length?matches[i+1].index:raw.length;
-  const lines=raw.slice(m.index,end).trim().split(/\r?\n/).slice(1);
-  const dialogue=lines.filter(x=>/^\s*[^:]{1,35}:\s*.+/.test(x)).join('\n');
-  return {
-   n:Number(m[1]),
-   action:lines.filter(x=>x.trim()&&!/^\s*[^:]{1,35}:\s*.+/.test(x)).join('\n')||'Roblox character action',
-   speaker:'Nooby',
-   dialogue,
-   subtitle:dialogue.split(/\r?\n/)[0]||'',
-   duration:5,
-   background:'city',
-   character:'noob',
-   color:'#ffcc00'
-  };
- }).sort((a,b)=>a.n-b.n);
- current=0;
- renderTimeline();
- fillEditor();
- renderVoices();
- drawScene();
- setStatus('storyStatus','Six scenes loaded successfully.');
- saveProject();
-}
-
-function renderTimeline(){
- const box=$('timeline');
- box.replaceChildren();
- scenes.forEach((s,i)=>{
-  const b=document.createElement('button');
-  b.className='sceneBtn'+(i===current?' active':'');
-  b.textContent='SCENE '+s.n;
-  b.onclick=()=>selectScene(i);
-  box.append(b);
- });
- $('sceneCount').textContent=scenes.length;
- $('currentScene').textContent=(current+1)+' / '+scenes.length;
-}
-
-function selectScene(i){
- current=Math.max(0,Math.min(scenes.length-1,i));
- renderTimeline();
- fillEditor();
- drawScene();
-}
-
-function fillEditor(){
- const s=getScene();
- $('duration').value=s.duration;
- $('sceneAction').value=s.action;
- $('characterName').value=s.speaker;
- $('characterDialogue').value=s.dialogue;
- $('subtitleText').value=s.subtitle;
- $('background').value=s.background;
- $('characterType').value=s.character;
- $('shirtColor').value=s.color;
-}
-
-function updateScene(){
- const s=getScene();
- s.duration=Math.max(1,Math.min(30,Number($('duration').value)||5));
- s.action=$('sceneAction').value;
- s.speaker=$('characterName').value.trim()||'Nooby';
- s.dialogue=$('characterDialogue').value;
- s.subtitle=$('subtitleText').value;
- renderTimeline();
- drawScene();
- renderVoices();
- saveProject();
- setStatus('timelineStatus','Scene updated.');
-}
-
-function setSubtitle(){
- $('subtitleText').value=$('characterDialogue').value;
- updateScene();
-}
-
-function applyAppearance(){
- const s=getScene();
- s.character=$('characterType').value;
- s.color=$('shirtColor').value;
- s.background=$('background').value;
- drawScene();
- saveProject();
- setStatus('appearanceStatus','Appearance applied.');
-}
-
-function previousScene(){selectScene(current-1)}
-function nextScene(){selectScene(current+1)}
-      
-function roundedRect(ctx,x,y,w,h,r){
- ctx.beginPath();
- ctx.roundRect(x,y,w,h,r);
- ctx.fill();
-}
-
-function drawBackground(ctx,type){
- const colors={
- city:['#182d58','#7198c5'],
- school:['#273c66','#b7a0d2'],
- forest:['#071b20','#24513a'],
- house:['#37244d','#d18c8a'],
- arena:['#321c50','#b44c72'],
- sky:['#4d8fc2','#d5b8ed']
- };
- const c=ctx.canvas;
- const pair=colors[type]||colors.city;
- const g=ctx.createLinearGradient(0,0,0,c.height);
- g.addColorStop(0,pair[0]);
- g.addColorStop(1,pair[1]);
- ctx.fillStyle=g;
- ctx.fillRect(0,0,c.width,c.height);
- if(type==='forest'){
-  for(let i=0;i<8;i++){
-   const x=i*85+10;
-   ctx.fillStyle='#102b25';
-   ctx.fillRect(x,400,25,430);
-   ctx.fillStyle='#164c38';
-   ctx.beginPath();
-   ctx.moveTo(x-65,480);
-   ctx.lineTo(x+12,180+(i%3)*40);
-   ctx.lineTo(x+90,480);
-   ctx.fill();
-  }
- }else{
-  for(let i=0;i<9;i++){
-   const x=i*68;
-   const h=180+(i%4)*55;
-   ctx.fillStyle='rgba(15,20,40,.55)';
-   ctx.fillRect(x,690-h,55,h);
-   ctx.fillStyle='rgba(255,255,255,.24)';
-   for(let j=0;j<4;j++)
-    ctx.fillRect(x+9+j%2*20,710-h+j*30,9,12);
-  }
- }
- ctx.fillStyle='rgba(10,12,24,.35)';
- ctx.fillRect(0,820,540,140);
-}
-
-function drawCharacter(ctx,x,y,color,type,t){
- const bob=Math.sin(t/220)*8;
- const headY=y-160+bob;
- let shirt=color;
- if(type==='pro')shirt='#202334';
- if(type==='admin')shirt='#a927d8';
- if(type==='villain')shirt='#28202d';
- if(type==='guest')shirt='#4a9ed1';
- ctx.fillStyle='rgba(0,0,0,.25)';
- ctx.beginPath();
- ctx.ellipse(x,y+7,65,16,0,0,Math.PI*2);
- ctx.fill();
- ctx.fillStyle='#26304a';
- roundedRect(ctx,x-37,y-65,29,68,8);
- roundedRect(ctx,x+8,y-65,29,68,8);
- ctx.fillStyle=shirt;
- roundedRect(ctx,x-75,y-137+bob,27,88,8);
- roundedRect(ctx,x+48,y-137+bob,27,88,8);
- roundedRect(ctx,x-49,y-145+bob,98,91,12);
- ctx.fillStyle='#f1c49a';
- roundedRect(ctx,x-43,headY,86,78,12);
- if(type==='admin'||type==='villain'){
-  ctx.fillStyle=type==='admin'?'#25213d':'#101019';
-  ctx.fillRect(x-44,headY-8,88,20);
- }
- ctx.fillStyle='#171722';
- ctx.fillRect(x-23,headY+30,10,12);
- ctx.fillRect(x+13,headY+30,10,12);
- ctx.strokeStyle='#7b3c3c';
- ctx.lineWidth=4;
- ctx.beginPath();
- ctx.arc(x,headY+43,12,.1,Math.PI-.1);
- ctx.stroke();
-}
-
-function wrapText(ctx,text,x,y,maxWidth,lineHeight){
- const words=String(text).split(/\s+/);
- let line='',lines=[];
- words.forEach(word=>{
-  const test=line?line+' '+word:word;
-  if(ctx.measureText(test).width>maxWidth&&line){
-   lines.push(line);
-   line=word;
-  }else line=test;
- });
- if(line)lines.push(line);
- lines.slice(0,2).forEach((l,i)=>{
-  ctx.fillText(l,x,y+i*lineHeight,maxWidth);
- });
-}
-
-function drawScene(){
- const canvas=$('stage');
- const ctx=canvas.getContext('2d');
- const s=getScene();
- const t=performance.now();
- drawBackground(ctx,s.background);
- const x=270+Math.sin(t/650)*65;
- drawCharacter(ctx,x,810,s.color,s.character,t);
- ctx.fillStyle='rgba(8,10,20,.65)';
- roundedRect(ctx,25,35,490,70,15);
- ctx.fillStyle='white';
- ctx.font='bold 27px Arial';
- ctx.textAlign='center';
- ctx.fillText($('storyTitle').value||'Roblox Adventure',270,79);
- ctx.fillStyle='#d8c9ff';
- ctx.font='bold 21px Arial';
- ctx.fillText('SCENE '+s.n,270,155);
- ctx.fillStyle='white';
- ctx.font='21px Arial';
- ctx.fillText(s.action||'',270,230,470);
- if(s.subtitle){
-  ctx.fillStyle='rgba(0,0,0,.78)';
-  roundedRect(ctx,25,840,490,82,12);
-  ctx.fillStyle='white';
-  ctx.font='bold 23px Arial';
-  wrapText(ctx,s.subtitle,270,875,450,27);
- }
-}
-
-function animate(){
- drawScene();
- animationId=requestAnimationFrame(animate);
-}
-
-function startAnimation(){
- if(animationId===null)animate();
-}
-
-function playScene(){
- stopAllScenes();
- const s=getScene();
- startAnimation();
- setStatus('previewStatus','Playing scene '+s.n);
- sceneTimer=setTimeout(()=>{
-  if(animationId!==null)cancelAnimationFrame(animationId);
-  animationId=null;
-  drawScene();
-  setStatus('previewStatus','Scene finished.');
- },s.duration*1000);
-}
-       
-function getSpeakerNames(){
- const names=[];
- scenes.forEach(s=>{
-  if(s.speaker)names.push(s.speaker);
-  s.dialogue.split(/\r?\n/).forEach(line=>{
-   const m=line.match(/^\s*([^:]{1,35}):\s*(.+)$/);
-   if(m)names.push(m[1].trim());
-  });
- });
- return [...new Set(names)];
-}
-
-function renderVoices(){
- const names=getSpeakerNames();
- const box=$('voiceAssignments');
- box.replaceChildren();
- const preview=$('previewCharacter');
- preview.replaceChildren();
-
- names.forEach(name=>{
-  if(!voiceMap[name])voiceMap[name]={uri:'',rate:1,pitch:1};
-  const opt=document.createElement('option');
-  opt.value=name;
-  opt.textContent=name;
-  preview.append(opt);
-
-  const d=document.createElement('div');
-  d.className='voicebox';
-  const h=document.createElement('h3');
-  h.textContent='🎤 '+name;
-
-  const voice=document.createElement('select');
-  const def=document.createElement('option');
-  def.value='';
-  def.textContent='Default device voice';
-  voice.append(def);
-
-  availableVoices.forEach(v=>{
-   const o=document.createElement('option');
-   o.value=v.voiceURI;
-   o.textContent=v.name+' · '+v.lang;
-   voice.append(o);
-  });
-  voice.value=voiceMap[name].uri||'';
-  voice.onchange=()=>{
-   voiceMap[name].uri=voice.value;
-   saveProject();
-  };
-
-  const rateLabel=document.createElement('label');
-  rateLabel.textContent='Speed: '+voiceMap[name].rate;
-  const rate=document.createElement('input');
-  rate.type='range';
-  rate.min='.6';rate.max='1.6';rate.step='.1';
-  rate.value=voiceMap[name].rate;
-  rate.oninput=()=>{
-   voiceMap[name].rate=Number(rate.value);
-   rateLabel.textContent='Speed: '+rate.value;
-   saveProject();
-  };
-
-  const pitchLabel=document.createElement('label');
-  pitchLabel.textContent='Pitch: '+voiceMap[name].pitch;
-  const pitch=document.createElement('input');
-  pitch.type='range';
-  pitch.min='.5';pitch.max='2';pitch.step='.1';
-  pitch.value=voiceMap[name].pitch;
-  pitch.oninput=()=>{
-   voiceMap[name].pitch=Number(pitch.value);
-   pitchLabel.textContent='Pitch: '+pitch.value;
-   saveProject();
-  };
-
-  const test=document.createElement('button');
-  test.className='secondary';
-  test.textContent='Preview '+name;
-  test.onclick=()=>speakText(name,'Hello! This is '+name+'.');
-
-  d.append(h,voice,rateLabel,rate,pitchLabel,pitch,test);
-  box.append(d);
- });
- if(!names.length)box.textContent='Load a story to detect speakers.';
-}
-
-function loadVoices(){
- if(!('speechSynthesis'in window)){
-  setStatus('voiceStatus','Speech synthesis unavailable.');
-  return;
- }
- availableVoices=speechSynthesis.getVoices();
- renderVoices();
- setStatus('voiceStatus',availableVoices.length+' device voices available.');
-}
-
-function speakText(name,text){
- if(!('speechSynthesis'in window))return;
- const cfg=voiceMap[name]||{};
- const u=new SpeechSynthesisUtterance(text);
- const v=availableVoices.find(x=>x.voiceURI===cfg.uri);
- if(v)u.voice=v;
- u.rate=Number(cfg.rate)||1;
- u.pitch=Number(cfg.pitch)||1;
- u.onstart=()=>setStatus('voiceStatus','Speaking as '+name);
- u.onend=()=>setStatus('voiceStatus','Voice preview finished.');
- u.onerror=e=>setStatus('voiceStatus','Voice error: '+e.error);
- speechSynthesis.speak(u);
-}
-
-function previewSelectedVoice(){
- const name=$('previewCharacter').value||'Nooby';
- speakText(name,$('voiceTest').value||'Hello!');
-}
-
-function speakDialogue(){
- if(!('speechSynthesis'in window))return;
- stopVoice();
- const s=getScene();
- speechQueue=s.dialogue.split(/\r?\n/).map(line=>{
-  const m=line.match(/^\s*([^:]{1,35}):\s*(.+)$/);
-  return m?{speaker:m[1].trim(),text:m[2].trim()}:
-  {speaker:s.speaker||'Nooby',text:line.trim()};
- }).filter(x=>x.text);
- playNextVoice();
-}
-
-function playNextVoice(){
- if(!speechQueue.length)return;
- const item=speechQueue.shift();
- const cfg=voiceMap[item.speaker]||{};
- const u=new SpeechSynthesisUtterance(item.text);
- const v=availableVoices.find(x=>x.voiceURI===cfg.uri);
- if(v)u.voice=v;
- u.rate=Number(cfg.rate)||1;
- u.pitch=Number(cfg.pitch)||1;
- u.onstart=()=>setStatus('voiceStatus',item.speaker+': '+item.text);
- u.onend=()=>playNextVoice();
- u.onerror=()=>playNextVoice();
- speechSynthesis.speak(u);
-}
-
-function stopVoice(){
- if('speechSynthesis'in window)speechSynthesis.cancel();
- speechQueue=[];
- setStatus('voiceStatus','Voice playback stopped.');
-}
-       
-function playAllScenes(){
- stopAllScenes();
- playingAll=true;
- let index=0;
- startAnimation();
- function advance(){
-  if(!playingAll)return;
-  selectScene(index);
-  const duration=scenes[index].duration*1000;
-  sceneTimer=setTimeout(()=>{
-   index++;
-   if(index<scenes.length)advance();
-   else{
-    playingAll=false;
-    setStatus('fullStatus','All six scenes finished.');
-   }
-  },duration);
- }
- advance();
-}
-
-function stopAllScenes(){
- playingAll=false;
- clearTimeout(sceneTimer);
- if(animationId!==null){
-  cancelAnimationFrame(animationId);
-  animationId=null;
- }
- drawScene();
- setStatus('fullStatus','Playback stopped.');
-}
-
-function getRecordingType(){
- const choice=$('exportFormat').value;
- if(typeof MediaRecorder==='undefined')return null;
- const mp4=['video/mp4;codecs=h264','video/mp4'];
- const webm=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];
- const supported=a=>a.find(t=>MediaRecorder.isTypeSupported(t));
- if(choice==='mp4')return supported(mp4);
- if(choice==='webm')return supported(webm);
- return supported(mp4)||supported(webm);
-}
-
-function startExport(){
- if(recording&&recording.state==='recording'){
-  setStatus('exportStatus','Recording already running.');
-  return;
- }
- if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){
-  setStatus('exportStatus','Recording is not supported by this browser.');
-  return;
- }
- const mime=getRecordingType();
- if(!mime){
-  setStatus('exportStatus','Selected format is not supported. Choose Automatic or WebM.');
-  return;
- }
-
- stopAllScenes();
- current=0;
- renderTimeline();
- fillEditor();
- drawScene();
-
- const canvas=$('stage');
- const stream=canvas.captureStream(30);
- recordedChunks=[];
- try{
-  recording=new MediaRecorder(stream,{
-   mimeType:mime,
-   videoBitsPerSecond:(Number($('exportQuality').value)||8)*1000000
-  });
- }catch(e){
-  setStatus('exportStatus','Could not start recording.');
-  return;
- }
-
- recording.ondataavailable=e=>{
-  if(e.data&&e.data.size)recordedChunks.push(e.data);
- };
-
- recording.onstop=()=>{
-  stream.getTracks().forEach(t=>t.stop());
-  const blob=new Blob(recordedChunks,{type:mime});
-  const ext=blob.type.includes('mp4')?'mp4':'webm';
-  const url=URL.createObjectURL(blob);
-  const link=$('downloadLink');
-  link.href=url;
-  link.download='roblox-shorts-video.'+ext;
-  link.textContent='⬇ Download '+ext.toUpperCase()+' Video';
-  link.hidden=false;
-  link.style.display='inline-block';
-  link.style.color='#c4b5fd';
-  $('exportProgress').style.width='100%';
-  setStatus('exportStatus','Video ready! Download your '+ext+' file.');
-  stopAllScenes();
- };
-
- recording.start(500);
- setStatus('exportStatus','Recording six scenes...');
- exportScene=0;
- exportElapsed=0;
- startAnimation();
- selectScene(0);
- clearInterval(exportTimer);
- exportTimer=setInterval(()=>{
-  exportElapsed+=0.1;
-  const total=scenes.reduce((sum,s)=>sum+s.duration,0);
-  const percent=Math.min(100,exportElapsed/total*100);
-  $('exportProgress').style.width=percent+'%';
-  let passed=0;
-  for(let i=0;i<scenes.length;i++){
-   if(exportElapsed>=passed&&exportElapsed<passed+scenes[i].duration){
-    if(exportScene!==i){
-     exportScene=i;
-     selectScene(i);
-    }
-    break;
-   }
-   passed+=scenes[i].duration;
-  }
-  if(exportElapsed>=total)stopExport();
- },100);
-}
-
-function stopExport(){
- clearInterval(exportTimer);
- if(recording&&recording.state==='recording'){
-  recording.stop();
- }else{
-  setStatus('exportStatus','No active recording.');
- }
-}
-       
-function projectData(){
- return {
-  title:$('storyTitle').value,
-  story:$('storyInput').value,
-  scenes:scenes,
-  voiceMap:voiceMap
- };
-}
-
-function saveProject(){
- try{
-  localStorage.setItem(KEY,JSON.stringify(projectData()));
-  setStatus('saveStatus','Project saved on this device.');
- }catch(e){
-  setStatus('saveStatus','Storage unavailable. Download a backup.');
- }
-}
-
-function restoreProject(){
- try{
-  const raw=localStorage.getItem(KEY);
-  if(!raw)return;
-  const data=JSON.parse(raw);
-  if(data.title)$('storyTitle').value=data.title;
-  if(data.story)$('storyInput').value=data.story;
-  if(Array.isArray(data.scenes)&&data.scenes.length===6)scenes=data.scenes;
-  voiceMap=data.voiceMap||{};
-  current=0;
-  renderTimeline();
-  fillEditor();
-  renderVoices();
-  drawScene();
-  setStatus('saveStatus','Previous project restored.');
- }catch(e){
-  setStatus('saveStatus','Could not restore project.');
- }
-}
-
-function downloadBackup(){
- const blob=new Blob([JSON.stringify(projectData(),null,2)],{
-  type:'application/json'
- });
- const url=URL.createObjectURL(blob);
- const a=document.createElement('a');
- a.href=url;
- a.download='roblox-shorts-project.json';
- a.click();
- setTimeout(()=>URL.revokeObjectURL(url),1500);
-}
-
-function clearProject(){
- if(!confirm('Delete your saved project?'))return;
- localStorage.removeItem(KEY);
- location.reload();
-}
-
-document.addEventListener('input',e=>{
- if(e.target.matches('input,textarea,select'))saveProject();
-});
-
-document.addEventListener('change',e=>{
- if(e.target.matches('input,textarea,select'))saveProject();
-});
-
-if('speechSynthesis'in window){
- speechSynthesis.onvoiceschanged=loadVoices;
-}
-
-// Start studio
-renderTimeline();
-fillEditor();
-restoreProject();
-loadVoices();
-drawScene();
-
-</script>
-</body>
-   </html>
-       
+   
