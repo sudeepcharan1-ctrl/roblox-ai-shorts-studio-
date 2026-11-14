@@ -4,857 +4,1391 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#10111b">
-<title>Roblox AI Shorts Studio 3D</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<meta name="theme-color" content="#10101c">
+<title>Roblox AI Shorts Studio</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#10111b;color:#fff;font-family:Arial,sans-serif}
-header{padding:16px;background:#191a29;border-bottom:1px solid #34344b}
-header h2{margin:0;color:#b49aff}
-header p{color:#aaa;font-size:13px;margin-bottom:0}
-.app{max-width:1100px;margin:auto;padding:12px}
-.panel{background:#191a29;padding:14px;margin:12px 0;border-radius:13px}
-h3{color:#c4b5fd;margin-top:0}
-button{background:#7654ed;color:white;border:0;border-radius:8px;padding:11px 14px;margin:4px;cursor:pointer}
-button:active{transform:scale(.97)}
-input,select,textarea{width:100%;padding:11px;margin:6px 0;background:#25263a;color:white;border:1px solid #41425b;border-radius:8px}
-textarea{min-height:90px;resize:vertical}
-.preview{background:#080910;padding:10px;border-radius:14px;display:flex;justify-content:center}
-#gameCanvas{width:100%;max-width:390px;aspect-ratio:9/16;display:block;border-radius:10px}
-#subtitle{max-width:390px;margin:8px auto;text-align:center;font-size:17px;font-weight:bold;text-shadow:2px 2px 4px #000;min-height:28px}
-.small{font-size:12px;color:#aaa}
-.sceneCard{padding:12px;background:#25263a;border-radius:9px;margin:8px 0}
-.sceneCard p{white-space:pre-wrap;line-height:1.5}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.row button{flex:1}
-@media(min-width:800px){
-.app{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.previewPanel{grid-row:span 2}
+:root {
+  --bg: #0c0c16;
+  --panel: #171727;
+  --panel2: #202038;
+  --text: #f5f4ff;
+  --muted: #a5a4c2;
+  --purple: #9b72ff;
+  --pink: #ff5cb8;
+  --cyan: #56e0ed;
+  --border: #34334f;
+  --radius: 16px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+button, input, select, textarea {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+  
+.status {
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 700;
+}
+.app {
+  max-width: 1250px;
+  margin: auto;
+  padding: 22px 16px 60px;
+}
+.hero {
+  margin-bottom: 22px;
+}
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: clamp(25px, 5vw, 39px);
+  letter-spacing: -1.2px;
+}
+.gradient-text {
+  background: linear-gradient(
+    90deg, var(--purple), var(--pink), var(--cyan)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.hero p {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 720px;
+  font-size: 14px;
+}
+.workspace {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr) minmax(280px, 370px);
+  gap: 18px;
+  align-items: start;
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 17px;
+  min-width: 0;
+}
+.panel + .panel {
+  margin-top: 16px;
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.panel-heading h2 {
+  font-size: 16px;
+  margin: 0;
+}
+.small-label {
+  color: var(--muted);
+  font-size: 11px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.field label {
+  color: #d9d7f2;
+  font-size: 12px;
+  font-weight: 700;
+}
+  
+input, select, textarea {
+  width: 100%;
+  color: var(--text);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 12px;
+}
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+select option {
+  background: var(--panel2);
+}
+.button-row {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.btn {
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.btn-primary {
+  color: white;
+  border-color: transparent;
+  background: linear-gradient(120deg, #8055ef, #c14dd8);
+}
+.btn-accent {
+  color: #10101c;
+  border-color: transparent;
+  background: var(--cyan);
+}
+.btn:active {
+  transform: scale(.98);
+}
+.preview-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 16px;
+}
+.preview {
+  position: relative;
+  overflow: hidden;
+  width: min(100%, 300px);
+  aspect-ratio: 9 / 16;
+  border: 1px solid #555174;
+  border-radius: 19px;
+  background: #26284b;
+  box-shadow: 0 15px 45px #0005;
+}
+.preview-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse at 50% 35%, #7c66c8 0, transparent 55%
+    ),
+    linear-gradient(
+      #272a57 0%, #55519a 55%,
+      #27263e 56%, #161522 100%
+    );
+}
+.preview-grid {
+  position: absolute;
+  inset: 56% -30% -10%;
+  opacity: .45;
+  background-image:
+    linear-gradient(#aaa0ff55 1px, transparent 1px),
+    linear-gradient(90deg, #aaa0ff55 1px, transparent 1px);
+  background-size: 25px 25px;
+  transform: perspective(120px) rotateX(20deg);
+}
+  
+.preview-top {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 800;
+}
+.preview-tag {
+  padding: 6px 9px;
+  border-radius: 20px;
+  background: #090915a8;
+}
+.preview-character {
+  position: absolute;
+  left: 50%;
+  top: 43%;
+  transform: translate(-50%, -50%);
+  width: 95px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 8px 5px #0005);
+}
+.char-head {
+  z-index: 2;
+  width: 66px;
+  height: 61px;
+  border: 3px solid #3e2e48;
+  border-radius: 10px;
+  background: #f3bd85;
+  position: relative;
+}
+.char-eyes {
+  position: absolute;
+  top: 23px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  justify-content: space-between;
+}
+.char-eyes i {
+  width: 7px;
+  height: 9px;
+  border-radius: 50%;
+  background: #241d35;
+}
+.char-mouth {
+  position: absolute;
+  left: 27px;
+  top: 41px;
+  width: 12px;
+  height: 5px;
+  border-bottom: 2px solid #8c4547;
+  border-radius: 50%;
+}
+.char-body {
+  width: 82px;
+  height: 58px;
+  margin-top: -1px;
+  border: 3px solid #3e2e48;
+  border-radius: 9px;
+  background: #9b72ff;
+}
+.preview-subtitle {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 34px;
+  padding: 9px 8px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.3;
+  color: white;
+  text-shadow: 2px 2px 2px #000;
+  background: #0909158c;
+  border-radius: 7px;
+}
+.preview-footer {
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  right: 12px;
+  text-align: center;
+  color: #dddafc;
+  font-size: 9px;
+}
+  
+.scene-list {
+  display: grid;
+  gap: 8px;
+}
+.scene-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #121220;
+  text-align: left;
+  color: var(--text);
+  width: 100%;
+}
+.scene-item.active {
+  border-color: var(--purple);
+  background: #29213f;
+}
+.scene-number {
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: #34304f;
+  font-size: 12px;
+  font-weight: 900;
+}
+.scene-info {
+  min-width: 0;
+}
+.scene-info strong {
+  display: block;
+  font-size: 12px;
+}
+.scene-info span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+.output {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #d6d4ed;
+  font-size: 12px;
+  line-height: 1.65;
+  background: #10101b;
+  padding: 12px;
+  border-radius: 10px;
+  min-height: 55px;
+}
+  
+@media (max-width: 760px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .app {
+    padding: 18px 12px 40px;
+  }
+  .panel {
+    padding: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
 }
 </style>
 </head>
 <body>
-<header>
-<h2>🎮 Roblox AI Shorts Studio 3D</h2>
-<p>Create 3D Roblox-inspired stories and vertical Shorts</p>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">🎬</div>
+    <div>
+      <div class="brand-name">ROBLOX SHORTS STUDIO</div>
+      <div class="brand-sub">AI STORY CREATOR</div>
+    </div>
+  </div>
+  <div class="status" id="status">● Studio Ready</div>
 </header>
 <main class="app">
-<section class="panel previewPanel">
-<h3>🎬 3D Video Preview</h3>
-<div class="preview"><canvas id="gameCanvas"></canvas></div>
-<div id="subtitle"></div>
-<p id="sceneStatus" class="small">Loading 3D world...</p>
-<div class="row">
-<button onclick="playScene()">▶ Play</button>
-<button onclick="stopScene()">■ Stop</button>
-</div>
-<div class="row">
-<button onclick="previousScene()">← Previous</button>
-<button onclick="nextScene()">Next →</button>
-</div>
-</section>
-
-<section class="panel">
-<h3>📖 Story Generator</h3>
-<input id="storyTopic" placeholder="Example: Two friends enter a haunted school">
-<select id="genre">
-<option>Comedy</option><option>Horror</option>
-<option>Friendship</option><option>Siblings</option>
-<option>School</option><option>Adventure</option>
-<option>Emotional</option><option>Survival</option>
-<option>Rich vs Poor</option><option>Mystery</option>
-<option>Superhero</option><option>Gaming Challenge</option>
-</select>
-<select id="duration">
-<option value="30">30 seconds</option>
-<option value="45">45 seconds</option>
-<option value="60" selected>60 seconds</option>
-<option value="90">90 seconds</option>
-</select>
-<button onclick="generateStory()">✨ Generate Full Story</button>
-<div id="storyOutput"></div>
-</section>
-
-<section class="panel">
-<h3>👥 Character Studio</h3>
-<div id="characterList"></div>
-<button onclick="addCharacter()">+ Add Character</button>
-</section>
-
-<section class="panel">
-<h3>🎙️ Voice Studio</h3>
-<select id="voiceSelect"></select>
-<button onclick="previewVoice()">Test Voice</button>
-<button onclick="playDialogue()">Play Story Dialogue</button>
-<button onclick="stopVoice()">Stop Voice</button>
-</section>
-
-<section class="panel">
-<h3>🎥 Video Export</h3>
-<select id="quality">
-<option value="1">Standard quality</option>
-<option value="1.5" selected>High quality</option>
-<option value="2">Very high quality</option>
-</select>
-<button onclick="exportVideo()">Export Video</button>
-<p id="exportStatus" class="small">Video export will use a browser-supported format.</p>
-</section>
-
-<section class="panel">
-<h3>📱 YouTube SEO Assistant</h3>
-<button onclick="generateSEO()">Generate Upload Package</button>
-<div id="seoOutput"></div>
-</section>
+  <section class="hero">
+    <h1>Create your next
+      <span class="gradient-text">viral Short</span>
+    </h1>
+    <p>
+      Build Roblox-inspired stories, customize scenes,
+      preview dialogue, and prepare YouTube metadata.
+    </p>
+  </section>
+  <div class="workspace">
+    <section class="main-column">
+      
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>✨ Story Generator</h2>
+          <span class="small-label">6 scenes</span>
+        </div>
+        <div class="field">
+          <label for="storyTitle">Story idea</label>
+          <input id="storyTitle"
+            value="Everyone Has a Mammoth Except Me"
+            placeholder="Enter your story idea">
+        </div>
+        <div class="field">
+          <label for="duration">Short duration</label>
+          <select id="duration">
+            <option value="30">30 seconds</option>
+            <option value="45" selected>45 seconds</option>
+            <option value="60">60 seconds</option>
+          </select>
+        </div>
+        <div class="button-row">
+          <button class="btn btn-primary"
+            id="generateStory">✨ Generate Story</button>
+          <button class="btn"
+            id="regenerateStory">🔄 Regenerate</button>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>📱 Vertical Preview</h2>
+          <span class="small-label">9:16</span>
+        </div>
+        <div class="preview-wrap">
+          <div class="preview" id="stage">
+            <div class="preview-bg"></div>
+            <div class="preview-grid"></div>
+            <div class="preview-top">
+              <span class="preview-tag">ROBLOX STORY</span>
+              <span class="preview-tag" id="sceneLabel">
+                SCENE 1/6
+              </span>
+            </div>
+            <div class="preview-character" id="previewCharacter">
+              <div class="char-head">
+                <div class="char-eyes">
+                  <i></i><i></i>
+                </div>
+                <div class="char-mouth"></div>
+              </div>
+              <div class="char-body" id="characterBody"></div>
+            </div>
+            <div class="preview-subtitle" id="subtitlePreview">
+              Everyone had a mammoth...
+            </div>
+            <div class="preview-footer">ROBLOX SHORTS STUDIO</div>
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="btn" id="prevScene">◀ Previous</button>
+          <button class="btn btn-accent" id="playScene">
+            ▶ Preview Scene
+          </button>
+          <button class="btn" id="nextScene">Next ▶</button>
+        </div>
+      </section>
+      
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>🎞️ Six-Scene Timeline</h2>
+          <span class="small-label" id="clock">00:00</span>
+        </div>
+        <div class="scene-list" id="timeline">
+          <div class="output">
+            Generate a story to see your scenes here.
+          </div>
+        </div>
+        <div class="button-row" style="margin-top:12px">
+          <button class="btn" id="playAll">▶ Play All</button>
+          <button class="btn" id="pausePlay">⏸ Pause</button>
+          <button class="btn" id="stopPlay">⏹ Stop</button>
+        </div>
+      </section>
+    </section>
+    <aside class="side-column">
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>🎭 Character Studio</h2>
+        </div>
+        <div class="field">
+          <label for="characterName">Character name</label>
+          <input id="characterName" value="Max">
+        </div>
+        <div class="field">
+          <label for="characterColor">Body color</label>
+          <select id="characterColor">
+            <option value="#9b72ff">Royal purple</option>
+            <option value="#ff5cb8">Pink</option>
+            <option value="#56e0ed">Cyan</option>
+            <option value="#52d273">Green</option>
+            <option value="#ffb84d">Orange</option>
+          </select>
+        </div>
+      </section>
+      
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>🌆 Scene Settings</h2>
+        </div>
+        <div class="field">
+          <label for="environment">Environment</label>
+          <select id="environment">
+            <option value="obby">Colorful Obby</option>
+            <option value="city">Roblox City</option>
+            <option value="forest">Mystery Forest</option>
+            <option value="school">Roblox School</option>
+            <option value="snow">Snowy Village</option>
+            <option value="lava">Lava Escape</option>
+            <option value="space">Outer Space</option>
+            <option value="beach">Tropical Beach</option>
+            <option value="castle">Fantasy Castle</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="subtitlePosition">Subtitle position</label>
+          <select id="subtitlePosition">
+            <option value="bottom">Bottom</option>
+            <option value="middle">Middle</option>
+            <option value="top">Top</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="subtitleSize">Subtitle size</label>
+          <select id="subtitleSize">
+            <option value="13">Small</option>
+            <option value="16" selected>Medium</option>
+            <option value="20">Large</option>
+            <option value="24">Extra large</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="subtitleColor">Subtitle color</label>
+          <select id="subtitleColor">
+            <option value="#ffffff">White</option>
+            <option value="#ffe66d">Yellow</option>
+            <option value="#56e0ed">Cyan</option>
+            <option value="#ff83cb">Pink</option>
+          </select>
+        </div>
+        <div class="button-row">
+          <button class="btn" id="subtitlesOn">
+            Subtitles On/Off
+          </button>
+          <button class="btn" id="speakerOn">
+            🔊 Voice Preview
+          </button>
+        </div>
+      </section>
+      
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>📝 Story Output</h2>
+        </div>
+        <div class="output" id="storyOutput">
+          Generate a story to see scenes and dialogue here.
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>📦 YouTube Package</h2>
+        </div>
+        <div class="output" id="youtubeOutput">
+          Suggested title, description and tags will appear here.
+        </div>
+        <div class="button-row" style="margin-top:10px">
+          <button class="btn" id="copyPackage">
+            📋 Copy Package
+          </button>
+        </div>
+      </section>
+    </aside>
+  </div>
 </main>
+<div id="toast" role="status" aria-live="polite"
+  style="position:fixed;bottom:15px;left:50%;
+  transform:translateX(-50%);background:#29213f;
+  padding:10px 15px;border-radius:10px;display:none;
+  z-index:99;font-size:12px"></div>
+  
 <script>
-  
-const canvas=document.getElementById("gameCanvas");
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.setSize(390,693,false);
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+"use strict";
 
-const world=new THREE.Scene();
-world.background=new THREE.Color(0x83c9f5);
-world.fog=new THREE.Fog(0x83c9f5,18,55);
+const $ = id => document.getElementById(id);
 
-const camera=new THREE.PerspectiveCamera(42,390/693,.1,100);
-camera.position.set(0,4.5,12);
-camera.lookAt(0,1.5,0);
-
-world.add(new THREE.HemisphereLight(0xffffff,0x657080,2));
-const sunlight=new THREE.DirectionalLight(0xffffff,2.2);
-sunlight.position.set(-5,10,8);
-sunlight.castShadow=true;
-world.add(sunlight);
-
-function material(color){
-return new THREE.MeshStandardMaterial({color,roughness:.8});
-}
-function cube(w,h,d,color,x,y,z,parent=world){
-const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material(color));
-mesh.position.set(x,y,z);
-mesh.castShadow=true;
-mesh.receiveShadow=true;
-parent.add(mesh);
-return mesh;
-}
-
-function clearEnvironment(){
-const remove=[];
-world.children.forEach(o=>{
-if(o.userData.environment)remove.push(o);
-});
-remove.forEach(o=>world.remove(o));
-}
-
-function envCube(w,h,d,color,x,y,z){
-const m=cube(w,h,d,color,x,y,z);
-m.userData.environment=true;
-return m;
-}
-
-function buildEnvironment(type="Street"){
-clearEnvironment();
-envCube(50,.3,50,0x4c9b52,0,-.2,0);
-
-if(type==="School"){
-envCube(12,5,3,0xe8d7ae,0,2.3,-5);
-envCube(3,2,1,0x4c82b5,-3,1,-3);
-envCube(3,2,1,0x4c82b5,3,1,-3);
-envCube(2,3,.3,0x49362b,0,1.3,-3.4);
-}else if(type==="House"){
-envCube(9,5,6,0xe4b98a,0,2.3,-5);
-envCube(10,.5,7,0x8b4545,0,5,-5);
-envCube(2,3,.3,0x513528,0,1.3,-1.9);
-envCube(1.3,1.3,.2,0x8dd8f5,-2,3,-1.9);
-envCube(1.3,1.3,.2,0x8dd8f5,2,3,-1.9);
-}else if(type==="Forest"){
-for(let i=0;i<12;i++){
-let x=(Math.random()-.5)*22;
-let z=-3-Math.random()*20;
-envCube(.6,3,.6,0x674329,x,1.4,z);
-envCube(2.8,2.8,2.8,0x236a35,x,3.5,z);
-}
-}else{
-envCube(50,.15,8,0x55565c,0,-.02,-5);
-envCube(8,3,.3,0xe7c69d,-7,1.4,-10);
-envCube(8,3,.3,0xd8a8a0,7,1.4,-10);
-}
-}
-
-buildEnvironment();
-  
-const characters=[];
-const skinColors=[0xffc28e,0xe0a06c,0x8d573c,0xf0c6a0];
-const outfitColors=[0x2878db,0xd83b45,0x25a66a,0x8b55c5];
-
-function makeCharacter(name,color=0x2878db,skin=0xffc28e){
-const group=new THREE.Group();
-const parts={};
-
-parts.body=cube(1,1.25,.5,color,0,1.65,0,group);
-parts.head=cube(.85,.85,.8,skin,0,2.75,0,group);
-parts.leftArm=cube(.3,1,.35,skin,-.68,1.7,0,group);
-parts.rightArm=cube(.3,1,.35,skin,.68,1.7,0,group);
-parts.leftLeg=cube(.38,.9,.4,0x303b65,-.25,.6,0,group);
-parts.rightLeg=cube(.38,.9,.4,0x303b65,.25,.6,0,group);
-
-parts.leftArm.position.set(-.68,1.8,0);
-parts.rightArm.position.set(.68,1.8,0);
-
-const eyeMat=material(0x171717);
-const eye1=new THREE.Mesh(new THREE.BoxGeometry(.11,.12,.05),eyeMat);
-const eye2=eye1.clone();
-eye1.position.set(-.19,2.8,.415);
-eye2.position.set(.19,2.8,.415);
-group.add(eye1,eye2);
-
-const mouth=cube(.22,.045,.04,0x6c2424,0,2.57,.43,group);
-
-group.position.set(characters.length===0?-.9:1.1,0,0);
-group.userData.parts=parts;
-group.userData.name=name;
-group.userData.mouth=mouth;
-group.userData.baseX=group.position.x;
-group.userData.walking=false;
-world.add(group);
-
-const character={name,color,skin,group,parts};
-characters.push(character);
-return character;
-}
-
-function addCharacter(name,color,skin){
-if(characters.length>=5)return alert("Maximum 5 characters");
-const n=name||"Character "+(characters.length+1);
-const c=makeCharacter(
-n,
-color||outfitColors[characters.length%outfitColors.length],
-skin||skinColors[characters.length%skinColors.length]
-);
-renderCharacterList();
-return c;
-}
-
-function renderCharacterList(){
-const box=document.getElementById("characterList");
-box.innerHTML="";
-characters.forEach((c,i)=>{
-const div=document.createElement("div");
-div.className="sceneCard";
-div.innerHTML=`
-<input value="${c.name}" aria-label="Character name">
-<label class="small">Outfit colour</label>
-<input type="color" value="#${c.color.toString(16).padStart(6,"0")}">
-<label class="small">Skin colour</label>
-<input type="color" value="#${c.skin.toString(16).padStart(6,"0")}">
-<button>Update Character</button>`;
-const inputs=div.querySelectorAll("input");
-div.querySelector("button").onclick=()=>{
-c.name=inputs[0].value||c.name;
-c.color=parseInt(inputs[1].value.slice(1),16);
-c.skin=parseInt(inputs[2].value.slice(1),16);
-c.parts.body.material.color.setHex(c.color);
-c.parts.head.material.color.setHex(c.skin);
-c.parts.leftArm.material.color.setHex(c.skin);
-c.parts.rightArm.material.color.setHex(c.skin);
-c.group.userData.name=c.name;
-renderCharacterList();
+const appState = {
+  scenes: [],
+  activeScene: 0,
+  subtitlesEnabled: true,
+  playing: false,
+  playTimer: null,
+  startedAt: 0,
+  elapsedBeforePause: 0
 };
-box.appendChild(div);
-});
+
+function setStatus(message) {
+  $("status").textContent = "● " + message;
 }
 
-addCharacter("Nooby",0x2878db,0xffc28e);
-addCharacter("Bacon",0x9b5b30,0xe0a06c);
-
-function positionCharacters(){
-characters.forEach((c,i)=>{
-c.group.position.x=(i-(characters.length-1)/2)*1.8;
-c.group.position.z=0;
-});
+function showToast(message) {
+  const toast = $("toast");
+  toast.textContent = message;
+  toast.style.display = "block";
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2200);
 }
 
-function animateCharacters(time){
-characters.forEach((c,i)=>{
-const p=c.parts;
-if(c.group.userData.walking){
-const swing=Math.sin(time*.009+i)*.65;
-p.leftLeg.rotation.x=swing;
-p.rightLeg.rotation.x=-swing;
-p.leftArm.rotation.x=-swing*.7;
-p.rightArm.rotation.x=swing*.7;
-}else{
-p.leftLeg.rotation.x=0;
-p.rightLeg.rotation.x=0;
-p.leftArm.rotation.x=0;
-p.rightArm.rotation.x=0;
-}
-c.group.userData.mouth.scale.y=c.group.userData.talking?1.8:1;
-});
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
 }
 
-function setTalking(name){
-characters.forEach(c=>{
-c.group.userData.talking=c.name===name;
-});
+function getDuration() {
+  return Number($("duration").value) || 45;
 }
 
-function setWalking(name,on){
-const c=characters.find(x=>x.name===name);
-if(c)c.group.userData.walking=on;
+function getTopic() {
+  return $("storyTitle").value.trim() ||
+    "My Roblox Adventure";
+}
+
+function getSceneDuration() {
+  return getDuration() / 6;
+}
+
+function formatTime(seconds) {
+  const total = Math.max(0, Math.floor(seconds));
+  const minutes = Math.floor(total / 60);
+  const remainder = total % 60;
+  return String(minutes).padStart(2, "0") + ":" +
+    String(remainder).padStart(2, "0");
 }
   
-let scenes=[];
-let currentScene=0;
-let playing=false;
-let playTimer=null;
-let dialogueIndex=0;
+function createStory(topic) {
+  const key = topic.toLowerCase();
+  let lines;
 
-const storyTemplates=[
-{
-title:"The Strange Message",
-description:"A quiet afternoon outside school. The friends are about to go home.",
-place:"School",
-action:"Nooby checks his phone and suddenly stops walking.",
-lines:[
-["Nooby","Wait... who sent me this strange message?"],
-["Bacon","Bro, why are you looking so scared?"],
-["Nooby","It says someone is waiting for us at the old mansion."],
-["Bacon","The mansion near the forest? Nobody goes there!"],
-["Nooby","Look, it says we have to come before sunset."],
-["Bacon","I don't like this. Something feels wrong."]
-],
-end:"A second message arrives: I CAN SEE YOU BOTH."
-},
-{
-title:"The Journey Begins",
-description:"The two friends walk towards the forest as the sky slowly gets darker.",
-place:"Forest",
-action:"Bacon walks behind Nooby while looking around nervously.",
-lines:[
-["Bacon","Are you sure this is a good idea?"],
-["Nooby","Relax. We will just look around and leave."],
-["Bacon","Then why is someone following us?"],
-["Nooby","What? Where?"],
-["Bacon","Behind that tree! I saw someone move!"],
-["Nooby","Stay close. Let's keep walking."]
-],
-end:"A shadow suddenly disappears behind the trees."
-},
-{
-title:"The Locked Door",
-description:"They finally reach an abandoned mansion with a huge wooden door.",
-place:"House",
-action:"Nooby slowly reaches for the door handle.",
-lines:[
-["Nooby","This place looks even worse up close."],
-["Bacon","Let's just go back home, please."],
-["Nooby","The door is already open."],
-["Bacon","I didn't touch it!"],
-["Nooby","Hello? Is anyone inside?"],
-["Bacon","Why did you call out? Now it knows we're here!"]
-],
-end:"The door slams shut behind them."
-},
-{
-title:"A Voice in the Dark",
-description:"Inside the mansion, the lights flicker and a strange voice echoes.",
-place:"House",
-action:"Bacon steps backwards as Nooby searches for a light switch.",
-lines:[
-["Bacon","Nooby! I heard someone whisper my name!"],
-["Nooby","There is nobody here. Stay calm."],
-["Bacon","Then who turned off the lights?"],
-["Nooby","I found a switch. Wait..."],
-["Bacon","Don't turn around!"],
-["Nooby","Why? What's behind me?"]
-],
-end:"A mysterious figure appears in the doorway."
-},
-{
-title:"The Big Reveal",
-description:"The mysterious figure walks into the light and removes its hood.",
-place:"House",
-action:"Both friends freeze as the figure steps closer.",
-lines:[
-["Nooby","Who are you?"],
-["Bacon","Please don't hurt us!"],
-["Stranger","You two finally arrived."],
-["Nooby","Why did you bring us here?"],
-["Stranger","Because one of you has something that belongs to me."],
-["Bacon","What are you talking about?"]
-],
-end:"The stranger points directly at Bacon."
-},
-{
-title:"The Final Twist",
-description:"The stranger reveals the truth. The friends finally understand the invitation.",
-place:"House",
-action:"Bacon slowly takes a mysterious key from his pocket.",
-lines:[
-["Bacon","Wait... I found this key yesterday."],
-["Nooby","You had that the whole time?"],
-["Stranger","That key opens the hidden room."],
-["Bacon","But how did you know I had it?"],
-["Stranger","Because I sent you the message."],
-["Nooby","So this was all a test?"]
-],
-end:"The hidden door opens. To be continued..."
-}
-];
-
-function generateStory(){
-const topic=document.getElementById("storyTopic").value.trim()||"Two friends discover a mystery";
-const genre=document.getElementById("genre").value;
-const duration=Number(document.getElementById("duration").value);
-const templates=storyTemplates;
-scenes=templates.map((t,i)=>({
-title:t.title,
-description:t.description,
-place:t.place,
-action:t.action,
-lines:t.lines.map(x=>({speaker:x[0],text:x[1]})),
-end:t.end,
-duration:duration/6
-}));
-scenes[0].description=topic+". "+scenes[0].description;
-scenes.forEach(s=>s.genre=genre);
-currentScene=0;
-renderStory();
-loadScene(0);
-}
-
-function renderStory(){
-const out=document.getElementById("storyOutput");
-out.innerHTML="";
-scenes.forEach((s,i)=>{
-const card=document.createElement("div");
-card.className="sceneCard";
-const heading=document.createElement("h4");
-heading.textContent="Scene "+(i+1)+": "+s.title;
-const desc=document.createElement("p");
-desc.textContent=s.description;
-const action=document.createElement("p");
-action.textContent="🎬 Action: "+s.action;
-const lines=document.createElement("p");
-lines.textContent=s.lines.map(l=>l.speaker+": "+l.text).join("\n");
-const ending=document.createElement("p");
-ending.textContent="⚡ Ending: "+s.end;
-const edit=document.createElement("button");
-edit.textContent="Edit Scene";
-edit.onclick=()=>editScene(i);
-card.append(heading,desc,action,lines,ending,edit);
-out.appendChild(card);
-});
-}
-
-function editScene(i){
-const s=scenes[i];
-const title=prompt("Scene title:",s.title);
-if(title!==null)s.title=title;
-const desc=prompt("Scene description:",s.description);
-if(desc!==null)s.description=desc;
-const action=prompt("Opening action:",s.action);
-if(action!==null)s.action=action;
-s.lines.forEach((line,j)=>{
-const value=prompt(line.speaker+" dialogue:",line.text);
-if(value!==null)line.text=value;
-});
-const ending=prompt("Scene ending:",s.end);
-if(ending!==null)s.end=ending;
-renderStory();
-loadScene(i);
+  if (key.includes("mammoth")) {
+    lines = [
+      ["The Missing Mammoth", "Everyone had a mammoth except me."],
+      ["The Big Laugh", "Even my best friend laughed at my empty stable."],
+      ["A Strange Discovery", "Then I found a glowing egg behind a tree."],
+      ["The Unexpected Hatch", "The egg cracked. A tiny mammoth appeared!"],
+      ["The Chase", "Suddenly, a giant shadow covered the whole village."],
+      ["The Twist", "My tiny mammoth roared. The giant mammoth was its MOM!"]
+    ];
+  } else if (key.includes("noob")) {
+    lines = [
+      ["The Noob", "Everyone called me the weakest player."],
+      ["The Challenge", "The champion challenged me to one final obby."],
+      ["The First Fall", "I failed before I even reached the first jump."],
+      ["The Secret", "Then I noticed a hidden path nobody had seen."],
+      ["The Final Jump", "I took a breath and made the impossible jump."],
+      ["The Twist", "I won the race. The champion asked me to teach HIM!"]
+    ];
+  } else {
+    lines = [
+      ["The Beginning", "I thought today would be completely normal."],
+      ["The Problem", "Then the strangest thing happened in the server."],
+      ["The Mystery", "Nobody knew who was behind it."],
+      ["The Clue", "I found a secret clue hidden in plain sight."],
+      ["The Showdown", "I followed the clue and faced the final challenge."],
+      ["The Twist", "The truth was crazier than anything I imagined!"]
+    ];
   }
-  
-function loadScene(index){
-if(!scenes.length)return;
-currentScene=Math.max(0,Math.min(index,scenes.length-1));
-const s=scenes[currentScene];
-buildEnvironment(s.place);
-positionCharacters();
-characters.forEach(c=>{
-c.group.userData.walking=false;
-c.group.userData.talking=false;
-});
-camera.position.set(0,4.3,12);
-camera.lookAt(0,1.6,0);
-document.getElementById("sceneStatus").textContent=
-"Scene "+(currentScene+1)+" / "+scenes.length+" — "+s.title;
-document.getElementById("subtitle").textContent=s.description;
+
+  return lines.map((line, index) => ({
+    id: index + 1,
+    title: line[0],
+    dialogue: line[1],
+    duration: getSceneDuration(),
+    environment: $("environment").value,
+    character: $("characterName").value.trim() || "Max"
+  }));
 }
 
-function nextScene(){
-if(!scenes.length)return;
-stopScene();
-loadScene((currentScene+1)%scenes.length);
+function generateStory() {
+  stopPlayback();
+  appState.scenes = createStory(getTopic());
+  appState.activeScene = 0;
+  renderTimeline();
+  renderStoryOutput();
+  renderYouTubePackage();
+  updatePreview();
+  setStatus("Story generated");
+  showToast("Six scenes generated!");
 }
 
-function previousScene(){
-if(!scenes.length)return;
-stopScene();
-loadScene((currentScene-1+scenes.length)%scenes.length);
-}
+function renderTimeline() {
+  const timeline = $("timeline");
 
-function playScene(){
-if(!scenes.length)generateStory();
-stopScene();
-playing=true;
-runCurrentScene();
-}
+  timeline.innerHTML = appState.scenes.map((scene, index) => `
+    <button class="scene-item ${index === appState.activeScene ? "active" : ""}"
+      data-scene="${index}">
+      <span class="scene-number">${index + 1}</span>
+      <span class="scene-info">
+        <strong>${escapeHTML(scene.title)}</strong>
+        <span>${escapeHTML(scene.dialogue)}</span>
+      </span>
+    </button>
+  `).join("");
 
-function stopScene(){
-playing=false;
-clearTimeout(playTimer);
-playTimer=null;
-stopVoice();
-characters.forEach(c=>{
-c.group.userData.walking=false;
-c.group.userData.talking=false;
-});
-}
-
-function runCurrentScene(){
-if(!playing||!scenes.length)return;
-const s=scenes[currentScene];
-let step=0;
-document.getElementById("subtitle").textContent=s.action;
-const speaker=characters[0];
-if(speaker){
-speaker.group.userData.walking=true;
-speaker.group.position.x=-.4;
-}
-camera.position.set(-1,4,10);
-camera.lookAt(0,1.5,0);
-
-playTimer=setTimeout(()=>{
-if(!playing)return;
-characters.forEach(c=>c.group.userData.walking=false);
-showNextLine();
-},1800);
-
-function showNextLine(){
-if(!playing)return;
-if(step>=s.lines.length){
-document.getElementById("subtitle").textContent=s.end;
-setTalking("");
-playTimer=setTimeout(()=>{
-if(!playing)return;
-currentScene++;
-if(currentScene>=scenes.length){
-stopScene();
-document.getElementById("subtitle").textContent="THE END";
-return;
-}
-loadScene(currentScene);
-runCurrentScene();
-},2500);
-return;
-}
-const line=s.lines[step++];
-document.getElementById("subtitle").textContent=
-line.speaker+": "+line.text;
-setTalking(line.speaker);
-const c=characters.find(x=>x.name===line.speaker);
-if(c){
-camera.position.set(c.group.position.x,3.5,8);
-camera.lookAt(c.group.position.x,1.9,0);
-}
-playTimer=setTimeout(showNextLine,Math.max(1800,line.text.length*65));
-}
-}
-
-let rafTime=0;
-function renderLoop(time){
-requestAnimationFrame(renderLoop);
-rafTime=time;
-animateCharacters(time);
-renderer.render(world,camera);
-}
-renderLoop(0);
-
-window.addEventListener("resize",()=>{
-renderer.setSize(390,693,false);
-});
-  
-let availableVoices=[];
-
-function loadVoices(){
-if(!("speechSynthesis" in window))return;
-availableVoices=speechSynthesis.getVoices();
-const select=document.getElementById("voiceSelect");
-select.innerHTML="";
-availableVoices.forEach((v,i)=>{
-const option=document.createElement("option");
-option.value=i;
-option.textContent=v.name+" ("+v.lang+")";
-select.appendChild(option);
-});
-}
-
-if("speechSynthesis" in window){
-loadVoices();
-speechSynthesis.onvoiceschanged=loadVoices;
-}
-
-function speak(text,voiceIndex,onend){
-if(!("speechSynthesis" in window)){
-if(onend)onend();
-return;
-}
-const utterance=new SpeechSynthesisUtterance(text);
-const v=availableVoices[voiceIndex];
-if(v)utterance.voice=v;
-utterance.rate=1;
-utterance.pitch=1;
-utterance.onend=()=>{if(onend)onend();};
-speechSynthesis.speak(utterance);
-}
-
-function previewVoice(){
-const index=Number(document.getElementById("voiceSelect").value);
-speechSynthesis.cancel();
-speak("Hello! Welcome to Roblox AI Shorts Studio.",index);
-}
-
-function stopVoice(){
-if("speechSynthesis" in window)speechSynthesis.cancel();
-}
-
-function playDialogue(){
-if(!scenes.length){
-alert("Generate a story first.");
-return;
-}
-stopVoice();
-let si=0,li=0;
-function next(){
-if(si>=scenes.length)return;
-const s=scenes[si];
-if(li>=s.lines.length){
-si++;li=0;
-next();
-return;
-}
-const line=s.lines[li++];
-document.getElementById("subtitle").textContent=
-line.speaker+": "+line.text;
-setTalking(line.speaker);
-const index=Number(document.getElementById("voiceSelect").value);
-speak(line.text,index,next);
-}
-next();
+  timeline.querySelectorAll("[data-scene]").forEach(button => {
+    button.addEventListener("click", () => {
+      selectScene(Number(button.dataset.scene));
+    });
+  });
 }
   
-let recorder=null;
-let recordedChunks=[];
+function selectScene(index) {
+  if (!appState.scenes.length) {
+    showToast("Generate a story first.");
+    return;
+  }
 
-async function exportVideo(){
-if(!scenes.length){
-alert("Generate a story first.");
-return;
-}
-if(!canvas.captureStream||!window.MediaRecorder){
-alert("Video recording is not supported by this browser.");
-return;
-}
-stopScene();
-stopVoice();
-currentScene=0;
-loadScene(0);
+  appState.activeScene = Math.max(
+    0,
+    Math.min(index, appState.scenes.length - 1)
+  );
 
-const quality=Number(document.getElementById("quality").value);
-renderer.setPixelRatio(quality);
-renderer.setSize(390,693,false);
-
-const stream=canvas.captureStream(30);
-let mime="video/webm;codecs=vp9";
-if(!MediaRecorder.isTypeSupported(mime)){
-mime="video/webm";
-}
-if(MediaRecorder.isTypeSupported("video/mp4")){
-mime="video/mp4";
-}
-try{
-recorder=new MediaRecorder(stream,{mimeType:mime});
-}catch(e){
-recorder=new MediaRecorder(stream);
-}
-recordedChunks=[];
-recorder.ondataavailable=e=>{
-if(e.data.size)recordedChunks.push(e.data);
-};
-recorder.onstop=()=>{
-const blob=new Blob(recordedChunks,{type:recorder.mimeType});
-const url=URL.createObjectURL(blob);
-const a=document.createElement("a");
-a.href=url;
-a.download=mime.includes("mp4")?"roblox-short.mp4":"roblox-short.webm";
-a.click();
-setTimeout(()=>URL.revokeObjectURL(url),5000);
-document.getElementById("exportStatus").textContent=
-"Export complete: "+a.download;
-};
-document.getElementById("exportStatus").textContent="Recording story...";
-recorder.start();
-
-let i=0;
-function recordNext(){
-if(i>=scenes.length){
-recorder.stop();
-stream.getTracks().forEach(t=>t.stop());
-return;
-}
-loadScene(i);
-const s=scenes[i];
-document.getElementById("subtitle").textContent=s.description;
-camera.position.set(0,4,11);
-camera.lookAt(0,1.5,0);
-characters.forEach(c=>c.group.userData.walking=true);
-setTimeout(()=>{
-characters.forEach(c=>c.group.userData.walking=false);
-document.getElementById("subtitle").textContent=s.action;
-setTimeout(()=>{
-document.getElementById("subtitle").textContent=
-s.lines.map(l=>l.speaker+": "+l.text).join("  ");
-setTimeout(()=>{
-document.getElementById("subtitle").textContent=s.end;
-i++;
-recordNext();
-},Math.max(3000,s.duration*400));
-},1800);
-},1800);
-}
-recordNext();
+  renderTimeline();
+  updatePreview();
 }
 
-function saveProject(){
-const data={
-scenes,
-characters:characters.map(c=>({
-name:c.name,color:c.color,skin:c.skin
-})),
-topic:document.getElementById("storyTopic").value,
-genre:document.getElementById("genre").value
-};
-localStorage.setItem("roblox3DProject",JSON.stringify(data));
-alert("Project saved on this device.");
-}
+function updatePreview() {
+  const scene = appState.scenes[appState.activeScene];
 
-function loadProject(){
-const raw=localStorage.getItem("roblox3DProject");
-if(!raw)return alert("No saved project found.");
-try{
-const data=JSON.parse(raw);
-scenes=data.scenes||[];
-document.getElementById("storyTopic").value=data.topic||"";
-document.getElementById("genre").value=data.genre||"Comedy";
-renderStory();
-loadScene(0);
-alert("Project loaded.");
-}catch(e){
-alert("Could not load saved project.");
-}
-}
+  $("sceneLabel").textContent =
+    `SCENE ${appState.activeScene + 1}/6`;
 
-function downloadProject(){
-const data=JSON.stringify({
-scenes,
-topic:document.getElementById("storyTopic").value
-},null,2);
-const blob=new Blob([data],{type:"application/json"});
-const url=URL.createObjectURL(blob);
-const a=document.createElement("a");
-a.href=url;
-a.download="roblox-story-project.json";
-a.click();
-setTimeout(()=>URL.revokeObjectURL(url),3000);
-}
+  if (!scene) return;
 
-function importProject(file){
-const reader=new FileReader();
-reader.onload=()=>{
-try{
-const data=JSON.parse(reader.result);
-scenes=data.scenes||[];
-document.getElementById("storyTopic").value=data.topic||"";
-renderStory();
-loadScene(0);
-}catch(e){alert("Invalid project file.");}
-};
-reader.readAsText(file);
+  $("subtitlePreview").textContent = scene.dialogue;
+  $("subtitlePreview").style.display =
+    appState.subtitlesEnabled ? "block" : "none";
+
+  $("characterBody").style.background =
+    $("characterColor").value;
+
+  $("previewCharacter").setAttribute(
+    "aria-label",
+    scene.character
+  );
+
+  $("clock").textContent = formatTime(
+    appState.activeScene * getSceneDuration()
+  );
+
+  const subtitle = $("subtitlePreview");
+  const position = $("subtitlePosition").value;
+
+  subtitle.style.top =
+    position === "top" ? "55px" :
+    position === "middle" ? "50%" : "auto";
+
+  subtitle.style.bottom =
+    position === "bottom" ? "34px" : "auto";
+
+  if (position === "middle") {
+    subtitle.style.transform = "translateY(-50%)";
+  } else {
+    subtitle.style.transform = "none";
+  }
+
+  subtitle.style.fontSize =
+    $("subtitleSize").value + "px";
+
+  subtitle.style.color = $("subtitleColor").value;
+
+  const backgrounds = {
+    obby: ["#272a57", "#55519a"],
+    city: ["#253e65", "#6a76a8"],
+    forest: ["#102f35", "#387b60"],
+    school: ["#38476a", "#8e83bd"],
+    snow: ["#536e9a", "#d6e7f5"],
+    lava: ["#431b38", "#d64c3f"],
+    space: ["#080b2c", "#573c91"],
+    beach: ["#168eaa", "#f0bb75"],
+    castle: ["#30234f", "#9270ad"]
+  };
+
+  const colors = backgrounds[$("environment").value] ||
+    backgrounds.obby;
+
+  document.querySelector(".preview-bg").style.background =
+    `radial-gradient(ellipse at 50% 35%, ${colors[1]}, transparent 55%), linear-gradient(${colors[0]} 0%, ${colors[1]} 55%, #27263e 56%, #161522 100%)`;
 }
   
-function generateSEO(){
-const topic=document.getElementById("storyTopic").value.trim()||"Roblox story";
-const genre=document.getElementById("genre").value;
-const title=topic.length>55?topic.slice(0,52)+"...":topic;
-const titles=[
-"😱 "+title+" | Roblox Story",
-"What Happens Next? 🤯 Roblox Shorts",
-"You Won't Believe This Roblox Ending!",
-"😂 The Funniest Roblox Story Ever!",
-"Roblox "+genre+" Story | Wait For The Twist!"
-];
-const hashtags="#Roblox #RobloxShorts #Gaming #Shorts #"+genre.replace(/\s/g,"");
-const description=
-"Watch this Roblox-inspired "+genre.toLowerCase()+" story!\n\n"+
-topic+"\n\n"+
-"Enjoy the story? Like, comment and subscribe for more Roblox Shorts!\n\n"+
-hashtags;
-const tags="Roblox, Roblox Shorts, Roblox story, Roblox animation, gaming shorts, "+genre+", funny Roblox, Roblox roleplay";
-const out=document.getElementById("seoOutput");
-out.innerHTML="";
-function addCopy(title,value){
-const box=document.createElement("div");
-box.className="sceneCard";
-const h=document.createElement("h4");
-h.textContent=title;
-const p=document.createElement("p");
-p.textContent=value;
-const b=document.createElement("button");
-b.textContent="Copy";
-b.onclick=()=>navigator.clipboard.writeText(value).then(
-()=>b.textContent="Copied!"
-).catch(()=>alert("Copy not supported. Select and copy the text."));
-box.append(h,p,b);
-out.appendChild(box);
-}
-titles.forEach((t,i)=>addCopy("Title option "+(i+1),t));
-addCopy("Description and hashtags",description);
-addCopy("YouTube tags",tags);
+function renderStoryOutput() {
+  $("storyOutput").textContent = appState.scenes.map(
+    (scene, index) =>
+      `SCENE ${index + 1}: ${scene.title}\n` +
+      `Character: ${scene.character}\n` +
+      `Dialogue: ${scene.dialogue}\n` +
+      `Duration: ${scene.duration.toFixed(1)} seconds`
+  ).join("\n\n");
 }
 
-const savePanel=document.createElement("section");
-savePanel.className="panel";
-savePanel.innerHTML=`
-<h3>💾 Project Manager</h3>
-<button id="saveBtn">Save Project</button>
-<button id="loadBtn">Load Project</button>
-<button id="downloadBtn">Download JSON</button>
-<label class="small">Import project JSON</label>
-<input type="file" id="importFile" accept=".json,application/json">
-`;
-document.querySelector("main").appendChild(savePanel);
+function renderYouTubePackage() {
+  const topic = getTopic();
+  const title = topic.length > 65
+    ? topic.slice(0, 62) + "..."
+    : topic;
 
-document.getElementById("saveBtn").onclick=saveProject;
-document.getElementById("loadBtn").onclick=loadProject;
-document.getElementById("downloadBtn").onclick=downloadProject;
-document.getElementById("importFile").onchange=e=>{
-if(e.target.files[0])importProject(e.target.files[0]);
-};
+  const description =
+    `${topic} 😭🔥\n\n` +
+    `Watch this Roblox-inspired short story until the end!\n` +
+    `What would YOU do? Comment below!\n\n` +
+    `Subscribe for more Roblox stories and shorts.\n\n` +
+    `#Roblox #RobloxShorts #Shorts`;
 
-buildEnvironment("Street");
-loadScene(0);
-renderCharacterList();
+  const tags = [
+    "Roblox", "Roblox Shorts", "Roblox Stories",
+    "Roblox Funny", "Gaming Shorts", "Roblox Animation",
+    "Shorts", "Roblox Adventure"
+  ];
 
-window.addEventListener("beforeunload",()=>{
-stopScene();
-stopVoice();
-});
+  $("youtubeOutput").textContent =
+    `TITLE\n${title} 😭🔥 #Roblox #Shorts\n\n` +
+    `DESCRIPTION\n${description}\n\n` +
+    `SEO TAGS\n${tags.join(", ")}`;
+}
+
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast("Copied to clipboard!"))
+      .catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const area = document.createElement("textarea");
+  area.value = text;
+  area.style.position = "fixed";
+  area.style.opacity = "0";
+  document.body.appendChild(area);
+  area.select();
+
+  try {
+    document.execCommand("copy");
+    showToast("Copy requested.");
+  } catch {
+    showToast("Please select and copy the text manually.");
+  }
+
+  area.remove();
+}
+  
+function stopPlayback() {
+  clearInterval(appState.playTimer);
+  appState.playTimer = null;
+  appState.playing = false;
+  appState.elapsedBeforePause = 0;
+  $("clock").textContent = "00:00";
+}
+
+function playOneScene() {
+  const scene = appState.scenes[appState.activeScene];
+
+  if (!scene) {
+    showToast("Generate a story first.");
+    return;
+  }
+
+  updatePreview();
+
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(
+      scene.dialogue
+    );
+
+    utterance.rate = 1;
+    utterance.pitch = 1.05;
+    window.speechSynthesis.speak(utterance);
+  } else {
+    showToast("Speech preview is not supported here.");
+  }
+}
+
+function playAllScenes() {
+  if (!appState.scenes.length) {
+    showToast("Generate a story first.");
+    return;
+  }
+
+  stopPlayback();
+  appState.playing = true;
+  appState.startedAt = Date.now();
+  setStatus("Playing story");
+
+  appState.playTimer = setInterval(() => {
+    if (!appState.playing) return;
+
+    const elapsed = (Date.now() - appState.startedAt) / 1000;
+    const index = Math.floor(elapsed / getSceneDuration());
+
+    $("clock").textContent = formatTime(elapsed);
+
+    if (index >= appState.scenes.length) {
+      stopPlayback();
+      selectScene(appState.scenes.length - 1);
+      setStatus("Playback finished");
+      return;
+    }
+
+    if (index !== appState.activeScene) {
+      selectScene(index);
+    }
+  }, 250);
+}
+
+function pausePlayback() {
+  if (!appState.playing) return;
+
+  appState.playing = false;
+  clearInterval(appState.playTimer);
+  appState.playTimer = null;
+  setStatus("Playback paused");
+}
+  
+function connectSettings() {
+  $("characterColor").addEventListener("change", updatePreview);
+  $("environment").addEventListener("change", () => {
+    appState.scenes.forEach(scene => {
+      scene.environment = $("environment").value;
+    });
+    updatePreview();
+  });
+
+  [
+    "subtitlePosition",
+    "subtitleSize",
+    "subtitleColor"
+  ].forEach(id => {
+    $(id).addEventListener("change", updatePreview);
+  });
+
+  $("characterName").addEventListener("change", () => {
+    const name = $("characterName").value.trim() || "Max";
+
+    appState.scenes.forEach(scene => {
+      scene.character = name;
+    });
+
+    renderStoryOutput();
+    updatePreview();
+  });
+
+  $("subtitlesOn").addEventListener("click", () => {
+    appState.subtitlesEnabled = !appState.subtitlesEnabled;
+    updatePreview();
+
+    showToast(
+      appState.subtitlesEnabled
+        ? "Subtitles enabled"
+        : "Subtitles disabled"
+    );
+  });
+
+  $("speakerOn").addEventListener("click", playOneScene);
+}
+
+function connectStoryControls() {
+  $("generateStory").addEventListener("click", generateStory);
+
+  $("regenerateStory").addEventListener("click", generateStory);
+
+  $("prevScene").addEventListener("click", () => {
+    selectScene(appState.activeScene - 1);
+  });
+
+  $("nextScene").addEventListener("click", () => {
+    selectScene(appState.activeScene + 1);
+  });
+
+  $("playScene").addEventListener("click", playOneScene);
+
+  $("playAll").addEventListener("click", playAllScenes);
+
+  $("pausePlay").addEventListener("click", pausePlayback);
+
+  $("stopPlay").addEventListener("click", () => {
+    stopPlayback();
+    selectScene(0);
+    setStatus("Playback stopped");
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  });
+
+  $("copyPackage").addEventListener("click", () => {
+    copyText($("youtubeOutput").textContent);
+  });
+}
+  
+function getProjectData() {
+  return {
+    format: "roblox-shorts-studio",
+    version: 1,
+    savedAt: new Date().toISOString(),
+    settings: {
+      storyTitle: $("storyTitle").value,
+      duration: $("duration").value,
+      characterName: $("characterName").value,
+      characterColor: $("characterColor").value,
+      environment: $("environment").value,
+      subtitlePosition: $("subtitlePosition").value,
+      subtitleSize: $("subtitleSize").value,
+      subtitleColor: $("subtitleColor").value,
+      subtitlesEnabled: appState.subtitlesEnabled
+    },
+    scenes: appState.scenes,
+    activeScene: appState.activeScene
+  };
+}
+
+function saveProject() {
+  const data = getProjectData();
+  const blob = new Blob(
+    [JSON.stringify(data, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "roblox-shorts-project.json";
+  link.click();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast("Project file prepared.");
+}
+
+function loadProjectData(data) {
+  if (
+    !data ||
+    data.format !== "roblox-shorts-studio" ||
+    !data.settings ||
+    !Array.isArray(data.scenes)
+  ) {
+    throw new Error("This is not a valid studio project.");
+  }
+
+  const s = data.settings;
+
+  $("storyTitle").value = s.storyTitle || "";
+  $("duration").value = ["30", "45", "60"].includes(String(s.duration))
+    ? String(s.duration)
+    : "45";
+
+  $("characterName").value = s.characterName || "Max";
+  $("characterColor").value = s.characterColor || "#9b72ff";
+  $("environment").value = s.environment || "obby";
+  $("subtitlePosition").value = s.subtitlePosition || "bottom";
+  $("subtitleSize").value = s.subtitleSize || "16";
+  $("subtitleColor").value = s.subtitleColor || "#ffffff";
+
+  appState.subtitlesEnabled = s.subtitlesEnabled !== false;
+
+  appState.scenes = data.scenes.slice(0, 6).map((scene, index) => ({
+    id: index + 1,
+    title: String(scene.title || `Scene ${index + 1}`),
+    dialogue: String(scene.dialogue || ""),
+    duration: Number(scene.duration) || getSceneDuration(),
+    environment: String(scene.environment || "obby"),
+    character: String(scene.character || "Max")
+  }));
+
+  appState.activeScene = Math.min(
+    Math.max(0, Number(data.activeScene) || 0),
+    Math.max(0, appState.scenes.length - 1)
+  );
+
+  renderTimeline();
+  renderStoryOutput();
+  renderYouTubePackage();
+  updatePreview();
+  setStatus("Project loaded");
+}
+  
+function addProjectControls() {
+  const panel = document.createElement("section");
+  panel.className = "panel";
+
+  panel.innerHTML = `
+    <div class="panel-heading">
+      <h2>💾 Project & Export</h2>
+    </div>
+    <div class="button-row">
+      <button class="btn" id="saveProject">Save JSON</button>
+      <button class="btn" id="loadProject">Load JSON</button>
+    </div>
+    <input id="projectFile" type="file"
+      accept=".json,application/json"
+      style="margin-top:12px">
+    <div class="field" style="margin-top:12px">
+      <label for="exportQuality">Export resolution</label>
+      <select id="exportQuality">
+        <option value="360">360 × 640</option>
+        <option value="540" selected>540 × 960</option>
+        <option value="720">720 × 1280</option>
+      </select>
+    </div>
+    <div class="button-row">
+      <button class="btn btn-primary" id="exportVideo">
+        🎥 Export Video
+      </button>
+    </div>
+    <p class="small-label" id="exportNote">
+      Export availability depends on your browser.
+    </p>
+  `;
+
+  document.querySelector(".side-column").prepend(panel);
+
+  $("saveProject").addEventListener("click", saveProject);
+
+  $("loadProject").addEventListener("click", () => {
+    $("projectFile").click();
+  });
+
+  $("projectFile").addEventListener("change", async event => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const data = JSON.parse(await file.text());
+      loadProjectData(data);
+      showToast("Project loaded successfully.");
+    } catch (error) {
+      showToast(error.message || "Could not load project.");
+    }
+
+    event.target.value = "";
+  });
+
+  $("exportVideo").addEventListener("click", exportVideo);
+}
+  
+function getSupportedVideoType() {
+  if (!window.MediaRecorder) return "";
+
+  const types = [
+    "video/webm;codecs=vp9",
+    "video/webm;codecs=vp8",
+    "video/webm"
+  ];
+
+  return types.find(type =>
+    MediaRecorder.isTypeSupported(type)
+  ) || "";
+}
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = String(text).split(/\s+/);
+  let line = "";
+  let currentY = y;
+
+  for (const word of words) {
+    const test = line ? line + " " + word : word;
+
+    if (ctx.measureText(test).width > maxWidth && line) {
+      ctx.fillText(line, x, currentY);
+      line = word;
+      currentY += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+
+  if (line) ctx.fillText(line, x, currentY);
+
+  return currentY + lineHeight;
+}
+
+function roundedRect(ctx, x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, width, height, radius);
+  ctx.fill();
+}
+  
+function drawVideoFrame(ctx, width, height, scene, index) {
+  const themes = {
+    obby: ["#272a57", "#8c70dc"],
+    city: ["#253e65", "#8c9bc7"],
+    forest: ["#102f35", "#45916a"],
+    school: ["#38476a", "#a394ce"],
+    snow: ["#536e9a", "#d6e7f5"],
+    lava: ["#431b38", "#e75d42"],
+    space: ["#080b2c", "#573c91"],
+    beach: ["#168eaa", "#f0bb75"],
+    castle: ["#30234f", "#9270ad"]
+  };
+
+  const colors = themes[scene.environment] || themes.obby;
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, height);
+  gradient.addColorStop(0, colors[0]);
+  gradient.addColorStop(0.55, colors[1]);
+  gradient.addColorStop(0.56, "#27263e");
+  gradient.addColorStop(1, "#161522");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = "#ffffff18";
+  for (let x = 0; x < width; x += 55) {
+    ctx.fillRect(x, height * 0.58, 2, height * 0.42);
+  }
+
+  for (let y = height * 0.6; y < height; y += 55) {
+    ctx.fillRect(0, y, width, 2);
+  }
+
+  ctx.fillStyle = "#090915bb";
+  roundedRect(ctx, 24, 24, width - 48, 54, 14);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 23px sans-serif";
+  ctx.fillText("ROBLOX STORY", 42, 58);
+
+  const centerX = width / 2;
+  const centerY = height * 0.43;
+
+  ctx.fillStyle = "#f3bd85";
+  roundedRect(ctx, centerX - 49, centerY - 95, 98, 90, 12);
+
+  ctx.fillStyle = "#241d35";
+  ctx.beginPath();
+  ctx.arc(centerX - 20, centerY - 55, 6, 0, Math.PI * 2);
+  ctx.arc(centerX + 20, centerY - 55, 6, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = $("characterColor").value;
+  roundedRect(ctx, centerX - 61, centerY - 5, 122, 100, 12);
+
+  ctx.fillStyle = "#090915cc";
+  roundedRect(ctx, 24, height - 220, width - 48, 155, 15);
+
+  ctx.fillStyle = $("subtitleColor").value;
+  ctx.font = `bold ${Number($("subtitleSize").value) * 2}px sans-serif`;
+  ctx.textAlign = "center";
+
+  drawWrappedText(
+    ctx,
+    appState.subtitlesEnabled ? scene.dialogue : "",
+    width / 2,
+    height - 165,
+    width - 90,
+    Number($("subtitleSize").value) * 2.7
+  );
+
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 20px sans-serif";
+  ctx.fillText(
+    `SCENE ${index + 1}/6`,
+    30,
+    height - 25
+  );
+}
+  
+async function exportVideo() {
+  if (!appState.scenes.length) {
+    showToast("Generate a story first.");
+    return;
+  }
+
+  const mimeType = getSupportedVideoType();
+
+  if (!mimeType) {
+    showToast("This browser does not support video recording.");
+    $("exportNote").textContent =
+      "Video recording is unavailable in this browser.";
+    return;
+  }
+
+  const exportButton = $("exportVideo");
+  exportButton.disabled = true;
+  exportButton.textContent = "Preparing video...";
+
+  let recorder;
+  let stream;
+
+  try {
+    const width = Number($("exportQuality").value) || 540;
+    const height = Math.round(width * 16 / 9);
+    const canvas = document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas is unavailable.");
+
+    stream = canvas.captureStream(30);
+
+    recorder = new MediaRecorder(stream, {
+      mimeType,
+      videoBitsPerSecond: 2500000
+    });
+
+    const chunks = [];
+
+    recorder.ondataavailable = event => {
+      if (event.data && event.data.size) {
+        chunks.push(event.data);
+      }
+    };
+
+    const finished = new Promise((resolve, reject) => {
+      recorder.onstop = resolve;
+      recorder.onerror = () =>
+        reject(new Error("Video recording failed."));
+    });
+
+    recorder.start();
+
+    const secondsPerScene = getSceneDuration();
+    const frameDelay = 1000 / 30;
+
+    for (let i = 0; i < appState.scenes.length; i++) {
+      const scene = appState.scenes[i];
+      const endTime = performance.now() +
+        secondsPerScene * 1000;
+
+      while (performance.now() < endTime) {
+        drawVideoFrame(ctx, width, height, scene, i);
+        await new Promise(resolve =>
+          setTimeout(resolve, frameDelay)
+        );
+
+        exportButton.textContent =
+          `Rendering scene ${i + 1}/6...`;
+      }
+    }
+
+    recorder.stop();
+    await finished;
+
+    const blob = new Blob(chunks, { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "roblox-short.webm";
+    link.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+    $("exportNote").textContent =
+      "Export finished. The downloaded file is WebM video.";
+
+    showToast("Video export finished!");
+  } catch (error) {
+    if (recorder && recorder.state !== "inactive") {
+      recorder.stop();
+    }
+
+    showToast(error.message || "Export failed.");
+    $("exportNote").textContent =
+      "Export failed. Try a supported browser.";
+  } finally {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+
+    exportButton.disabled = false;
+    exportButton.textContent = "🎥 Export Video";
+  }
+          }
+  
+function initializeStudio() {
+  connectSettings();
+  connectStoryControls();
+  addProjectControls();
+
+  generateStory();
+
+  setStatus("Studio Ready");
+}
+
+document.addEventListener("DOMContentLoaded", initializeStudio);
 </script>
 </body>
 </html>
